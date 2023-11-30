@@ -1,15 +1,17 @@
-const mysql = require('mysql2')
-const con = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Anusreecoddle4*',
-    database: 'clinic'
-})
-con.connect(function (err) {
-    if (err) {
-        console.error('Error connecting to database:', err.message)
-    } else {
-        console.log('Connected to database')
-    }
-})
-module.exports = con
+const database = require('../databaseConnect');
+function registerUser(name, username, password, age, gender, phone, bloodgroup, callback) {
+  const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup) values (?, ?, ?, ?, ?, ?, ?)'
+  const values = [name, username, password, age, gender, phone, bloodgroup]
+  database.query(qr, values, callback)
+}
+function loginUser(username, password, callback) {
+  const qr = 'select * from patients where username=? and password=?'
+  const values = [username, password]
+
+  database.query(qr, values, callback)
+}
+module.exports = {
+  registerUser,
+  loginUser,
+}
+

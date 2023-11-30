@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon login.js"
+    "start": "nodemon app.js"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
