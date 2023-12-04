@@ -1,7 +1,7 @@
 const database = require('../databaseConnect');
-function registerUser(name, username, password, age, gender, phone, bloodgroup, callback) {
-  const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup) values (?, ?, ?, ?, ?, ?, ?)'
-  const values = [name, username, password, age, gender, phone, bloodgroup]
+function registerUser(name, username, password, age, gender, phone, bloodgroup,employees_id, callback) {
+  const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup,employees_id) values (?, ?, ?, ?, ?, ?, ?,?)'
+  const values = [name, username, password, age, gender, phone, bloodgroup,employees_id]
   database.query(qr, values, callback)
 }
 function loginUser(username, password, callback) {
@@ -14,4 +14,3 @@ module.exports = {
   registerUser,
   loginUser,
 }
-
