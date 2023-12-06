@@ -4,14 +4,14 @@ const register = async function (req, res) {
     console.log('Registration Request Body:', req.body)
     const { name, username, password, age, gender, phone, bloodgroup, employees_id } = req.body
     const registeredUser = await userModel.checkRegisteredUser(username)
-      if (registeredUser.length > 0) {
-        console.error('User is already registered')
-        res.status(409).send({ error: 'User is already registered' })
-        return
-      }
     if (!name || !username || !password || !age || !gender || !phone || !bloodgroup || !employees_id) {
       console.error('Some fields are empty')
       res.status(409).send({ error: 'All fields are required' })
+      return
+    }
+    if (registeredUser.length > 0) {
+      console.error('User is already registered')
+      res.status(409).send({ error: 'User is already registered' })
       return
     }
     await userModel.registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id)
