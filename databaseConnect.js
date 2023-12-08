@@ -1,4 +1,6 @@
 const mysql = require('mysql2')
+const util = require('util')
+
 function makeDb() {
     const con = mysql.createConnection({
         host: 'localhost',
@@ -13,8 +15,16 @@ function makeDb() {
             console.log('Connected to database')
         }
     })
-    return con
-}
-    module.exports ={
-        makeDb
+    return {
+        query(qr, values) {
+            return util.promisify(con.query)
+                .call(con, qr, values)
+        },
+        close() {
+            return util.promisify(con.end).call(con);
+        }
     }
+}
+module.exports = {
+    makeDb
+}

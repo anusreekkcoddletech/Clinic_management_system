@@ -1,18 +1,17 @@
-const mysql = require('mysql')
-const {makeDb} = require('../databaseConnect')
-const util = require('util')
+
+const { makeDb } = require('../databaseConnect')
 
 async function registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id) {
   const db = makeDb()
   try {
     const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup,employees_id) values (?, ?, ?, ?, ?, ?, ?,?)'
     const values = [name, username, password, age, gender, phone, bloodgroup, employees_id]
-    await query(db, qr, values)
+    await db.query(qr, values)
   } catch (err) {
     console.error('Error:', err.message)
   }
   finally {
-    await close(db)
+    await db.close()
   }
 }
 async function checkRegisteredUser(username) {
@@ -20,12 +19,12 @@ async function checkRegisteredUser(username) {
   try {
     const qr = 'select * from patients where username =?'
     const values = [username]
-    const registeredUser = await query(db, qr, values)
+    const registeredUser = await db.query(qr, values)
     return registeredUser
   } catch (err) {
     console.error('Error checking existing user:', err.message)
   } finally {
-    await close(db)
+    await db.close()
   }
 }
 async function loginUser(username, password) {
@@ -33,24 +32,16 @@ async function loginUser(username, password) {
   try {
     const qr = 'select * from patients where username=? and password=?'
     const values = [username, password]
-    const login = await query(db, qr, values)
+    const login = await db.query(qr, values)
     return login
   } catch (err) {
     console.error('Error:', err.message)
   } finally {
-    await close(db)
+    await db.close()
   }
-}
-function query(db, qr, values) {
-  return util.promisify(db.query).call(db, qr, values)
-}
-function close(db) {
-  return util.promisify(db.end).call(db)
 }
 module.exports = {
   registerUser,
   checkRegisteredUser,
   loginUser,
-  query,
-  close
 }

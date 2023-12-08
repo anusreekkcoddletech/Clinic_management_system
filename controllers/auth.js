@@ -1,40 +1,48 @@
+
 const userModel = require('../models/auth')
+const jwt = require('jsonwebtoken')
+
 const register = async function (req, res) {
   try {
     console.log('Registration Request Body:', req.body)
     const { name, username, password, age, gender, phone, bloodgroup, employees_id } = req.body
-    const registeredUser = await userModel.checkRegisteredUser(username)
     if (!name || !username || !password || !age || !gender || !phone || !bloodgroup || !employees_id) {
       console.error('Some fields are empty')
       res.status(409).send({ error: 'All fields are required' })
       return
     }
-    if (registeredUser.length > 0) {
+    const checkExistingUser = await userModel.checkRegisteredUser(username)
+    if (checkExistingUser.length > 0) {
       console.error('User is already registered')
       res.status(409).send({ error: 'User is already registered' })
-      return
+    } else {
+      await userModel.registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id)
+      res.status(200).send({ success: 'registration completed' })
     }
-    await userModel.registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id)
-    res.status(200).send({ success: 'registration completed' })
-  }
-  catch (err) {
+  } catch (err) {
     console.error('Error executing registration query:', err.message)
     res.status(500).send({ error: 'registration failed' })
   }
 }
+
 const login = async function (req, res) {
   try {
     console.log('Login Request Body:', req.body)
     const { username, password } = req.body
     if (!username || !password) {
       console.error('Some fields are empty')
-      res.status(400).send({ error: 'Some fields are empty' })
+      res.status(409).send({ error: 'Some fields are empty' })
       return
     }
+
     const result = await userModel.loginUser(username, password)
     if (result.length > 0) {
-      console.log('login successful')
-      res.status(200).send({ success: 'login successful' })
+      const resp = {
+        id: result[0].id,
+        display_name: result[0].display_name
+      }
+      const token = jwt.sign(resp, "secret", { expiresIn: 86400 })
+      res.status(200).send({ auth: true, token: token })
     } else {
       res.status(401).send({ error: 'invalid credentials' })
     }
@@ -47,4 +55,3 @@ module.exports = {
   register,
   login,
 }
-
