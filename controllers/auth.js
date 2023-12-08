@@ -1,4 +1,6 @@
+
 const userModel = require('../models/auth')
+const jwt = require('jsonwebtoken')
 
 const register = async function (req, res) {
   try {
@@ -35,8 +37,12 @@ const login = async function (req, res) {
 
     const result = await userModel.loginUser(username, password)
     if (result.length > 0) {
-      console.log('login successful')
-      res.status(200).send({ success: 'login successful' })
+      const resp = {
+        id: result[0].id,
+        display_name: result[0].display_name
+      }
+      const token = jwt.sign(resp, "secret", { expiresIn: 86400 })
+      res.status(200).send({ auth: true, token: token })
     } else {
       res.status(401).send({ error: 'invalid credentials' })
     }
@@ -49,4 +55,3 @@ module.exports = {
   register,
   login,
 }
-

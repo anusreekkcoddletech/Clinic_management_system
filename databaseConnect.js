@@ -28,6 +28,3 @@ function makeDb() {
 module.exports = {
     makeDb
 }
-
-
-

@@ -1,3 +1,4 @@
+
 const { makeDb } = require('../databaseConnect')
 
 async function registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id) {
@@ -44,4 +45,3 @@ module.exports = {
   checkRegisteredUser,
   loginUser,
 }
-
