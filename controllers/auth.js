@@ -51,7 +51,18 @@ const login = async function (req, res) {
     res.status(500).send({ error: 'invalid credentials' })
   }
 }
+
+const getCurrentMonthPatients = async function (req, res) {
+  try {
+    const currentMonthPatients = await userModel.getCurrentMonthPatients()
+    res.status(200).send({ patients: currentMonthPatients })
+  } catch (err) {
+    console.error('Error fetching data:', err.message)
+    res.status(500).send({ error: 'Failed to fetch data' })
+  }
+}
 module.exports = {
   register,
   login,
+  getCurrentMonthPatients
 }
