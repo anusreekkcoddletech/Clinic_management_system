@@ -41,21 +41,8 @@ async function loginUser(username, password) {
   }
 }
 
-async function getCurrentMonthPatients() {
-  const db = makeDb();
-  try {
-    const qr = 'SELECT * FROM patients WHERE MONTH(created) = MONTH(CURRENT_DATE()) AND YEAR(created) = YEAR(CURRENT_DATE())';
-    const currentMonthPatients = await db.query(qr);
-    return currentMonthPatients;
-  } catch (err) {
-    console.error('Error fetching current month patients:', err.message);
-  } finally {
-    await db.close();
-  }
-}
 module.exports = {
   registerUser,
   checkRegisteredUser,
   loginUser,
-  getCurrentMonthPatients
 }
