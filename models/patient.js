@@ -10,7 +10,7 @@ async function getCurrentMonthPatients(page, limit) {
         const currentMonthPatients = await db.query(qr)
         return currentMonthPatients
     } catch (err) {
-        console.error('Error fetching current month patients:', err.message)
+        console.log('Error fetching current month patients:', err.message)
     } finally {
         await db.close()
     }
