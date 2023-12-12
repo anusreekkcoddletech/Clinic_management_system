@@ -6,8 +6,11 @@ const getCurrentMonthPatients = async (req, res) => {
 
         const currentMonthPatients = await userModel.getCurrentMonthPatients(page, limit)
         console.log(currentMonthPatients)
-       
+        if (!page || !limit ) {
+            return res.status(400).send({ success: false, message: 'please check page or limit values' })
+        }
         res.status(200).send( { success: true, message: 'The current month patients listed below', data: currentMonthPatients})
+       
     } catch (err) {
         console.log('Error fetching data:', err.message)
         res.status(500).send({ error: 'Failed to fetch data' })
@@ -16,3 +19,5 @@ const getCurrentMonthPatients = async (req, res) => {
 module.exports = {
     getCurrentMonthPatients
 }
+
+
