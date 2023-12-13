@@ -9,6 +9,14 @@ router.get('/selected-month-patients',jwt.verifyToken, patientController.getSele
 
 router.get('/selected-day-patients',jwt.verifyToken, patientController.getPatientsbyDate)
 
+router.get('/current-month-patients-appointments',jwt.verifyToken, patientController.getCurrentMonthPatientsappointments)
+
+router.get('/selected-month-patients-appointments',jwt.verifyToken, patientController.getSelectedMonthPatientsappointments)
+
+router.get('/selected-day-patients-appointments',jwt.verifyToken, patientController.getPatientsappointmentbyDate)
+
+
+
 
 module.exports = router
 

@@ -17,6 +17,7 @@ const getCurrentMonthPatients = async (req, res) => {
     }
 }
 
+
 const getSelectedMonthPatients = async (req, res) => {
     try {
         const { month, year } = req.query
@@ -30,12 +31,61 @@ const getSelectedMonthPatients = async (req, res) => {
         res.status(500).send({ error: 'Failed to fetch data' })
     }
 }
+
+
 const getPatientsbyDate = async (req, res) => {
     try {
-        const { yesterday, today , tomorrow } = req.query
-        const patientsbyDate = await userModel.getPatientsbyDate(yesterday, today , tomorrow)
+        const { yesterday, today, tomorrow } = req.query
+        const patientsbyDate = await userModel.getPatientsbyDate(yesterday, today, tomorrow)
         console.log(patientsbyDate)
         res.status(200).send({ success: true, message: 'Patients listed below', data: patientsbyDate })
+
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+
+const getCurrentMonthPatientsappointments = async (req, res) => {
+    try {
+        const { page, limit } = req.query
+
+        const currentMonthPatientsappointements = await userModel.getCurrentMonthPatientsappointments(page, limit)
+        console.log(currentMonthPatientsappointements)
+        if (!page || !limit) {
+            return res.status(400).send({ success: false, message: 'please check page or limit values' })
+        }
+        res.status(200).send({ success: true, message: 'The current month patients listed below', data: currentMonthPatientsappointements })
+
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+
+const getSelectedMonthPatientsappointments = async (req, res) => {
+    try {
+        const { month, year } = req.query
+        const selectedMonthPatientsappointments = await userModel.getSelectedMonthPatientsappointments(month, year)
+        console.log(selectedMonthPatientsappointments)
+
+        res.status(200).send({ success: true, message: 'Patients listed below', data: selectedMonthPatientsappointments })
+
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+
+const getPatientsappointmentbyDate = async (req, res) => {
+    try {
+        const { yesterday, today , tomorrow } = req.query
+        const patientsappointmentbyDate = await userModel.getPatientsappointmentbyDate(yesterday, today , tomorrow)
+        console.log(patientsappointmentbyDate)
+        res.status(200).send({ success: true, message: 'Patients listed below', data: patientsappointmentbyDate })
 
     } catch (err) {
         console.log('Error fetching data:', err.message)
@@ -46,7 +96,10 @@ const getPatientsbyDate = async (req, res) => {
 module.exports = {
     getCurrentMonthPatients,
     getSelectedMonthPatients,
-    getPatientsbyDate
+    getPatientsbyDate,
+    getCurrentMonthPatientsappointments,
+    getSelectedMonthPatientsappointments,
+    getPatientsappointmentbyDate
 }
 
 
