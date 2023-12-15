@@ -14,6 +14,7 @@ async function registerUser(name, username, password, age, gender, phone, bloodg
     await db.close()
   }
 }
+
 async function checkRegisteredUser(username) {
   const db = makeDb()
   try {

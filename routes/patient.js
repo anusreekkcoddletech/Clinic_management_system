@@ -15,6 +15,8 @@ router.get('/selected-month-patients-appointments',jwt.verifyToken, patientContr
 
 router.get('/selected-day-patients-appointments',jwt.verifyToken, patientController.getPatientsappointmentbyDate)
 
+router.post('/book-Appointments',jwt.verifyToken, patientController.bookAppointmentsList)
+
 
 
 

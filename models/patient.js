@@ -164,13 +164,28 @@ async function getPatientsappointmentbyDate(yesterday, today, tomorrow) {
 }
 
 
+async function bookAppointmentsList(date, status, patients_id, employees_id) {
+    const db = makeDb()
+    try {
+      const qr = 'insert into appointments (date, status, patients_id, employees_id) values (?, ?, ?, ?)'
+      const values = [date, status, patients_id, employees_id]
+      await db.query(qr, values)
+    } catch (err) {
+      console.error('Error:', err.message)
+    }
+    finally {
+      await db.close()
+    }
+  }
+
 module.exports = {
     getCurrentMonthPatients,
     getSelectedMonthPatients,
     getPatientsbyDate,
     getCurrentMonthPatientsappointments,
     getSelectedMonthPatientsappointments,
-    getPatientsappointmentbyDate
+    getPatientsappointmentbyDate,
+    bookAppointmentsList
 }
 
 

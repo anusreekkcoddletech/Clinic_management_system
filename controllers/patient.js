@@ -82,9 +82,8 @@ const getSelectedMonthPatientsappointments = async (req, res) => {
 
 const getPatientsappointmentbyDate = async (req, res) => {
     try {
-        const { yesterday, today , tomorrow } = req.query
-        const patientsappointmentbyDate = await userModel.getPatientsappointmentbyDate(yesterday, today , tomorrow)
-        console.log(patientsappointmentbyDate)
+        const { yesterday, today, tomorrow } = req.query
+        const patientsappointmentbyDate = await userModel.getPatientsappointmentbyDate(yesterday, today, tomorrow)
         res.status(200).send({ success: true, message: 'Patients listed below', data: patientsappointmentbyDate })
 
     } catch (err) {
@@ -93,13 +92,34 @@ const getPatientsappointmentbyDate = async (req, res) => {
     }
 }
 
+
+const bookAppointmentsList = async function (req, res) {
+    try {
+        console.log('appointment Request Body:', req.body)
+        const { date, status, patients_id, employees_id } = req.body
+
+        if (!date || !status || !patients_id || !employees_id) {
+            console.error('Some fields are empty')
+            res.status(409).send({ error: 'All fields are required' })
+        }else{
+         await userModel.bookAppointmentsList(date, status, patients_id, employees_id)
+        res.status(200).send({ success: true, message: 'Appointment requested', data: req.body })
+        }
+    } catch (err) {
+        console.error('Error executing appointment query:', err.message)
+        res.status(500).send({ error: 'Booking failed' })
+    }
+}
+
+
 module.exports = {
     getCurrentMonthPatients,
     getSelectedMonthPatients,
     getPatientsbyDate,
     getCurrentMonthPatientsappointments,
     getSelectedMonthPatientsappointments,
-    getPatientsappointmentbyDate
+    getPatientsappointmentbyDate,
+    bookAppointmentsList
 }
 
 
