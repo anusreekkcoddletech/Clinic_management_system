@@ -80,7 +80,7 @@ const getSelectedMonthPatientsappointments = async (req, res) => {
 }
 
 
-const getPatientsappointmentbyDate = async (req, res) => {
+const getPatientsAppointmentbyDate = async (req, res) => {
     try {
         const { yesterday, today, tomorrow } = req.query
         const patientsappointmentbyDate = await userModel.getPatientsappointmentbyDate(yesterday, today, tomorrow)
@@ -119,14 +119,28 @@ const bookAppointmentsList = async function (req, res) {
 }
 
 
+
+const getPatientsAppointmentsList = async (res) => {
+    try {
+        const patientsappointmentbyDate = await userModel.getPatientsAppointments()
+        res.status(200).send({ success: true, message: 'Patients listed below', data: patientsappointmentbyDate })
+
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+
 module.exports = {
     getCurrentMonthPatients,
     getSelectedMonthPatients,
     getPatientsbyDate,
     getCurrentMonthPatientsappointments,
     getSelectedMonthPatientsappointments,
-    getPatientsappointmentbyDate,
-    bookAppointmentsList
+    getPatientsAppointmentbyDate,
+    bookAppointmentsList,
+    getPatientsAppointmentsList
 }
 
 
