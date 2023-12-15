@@ -192,6 +192,21 @@ async function bookAppointmentsList(date, status, patients_id, employees_id) {
     }
   }
 
+
+  async function getPatientsAppointments() {
+    const db = makeDb()
+    try {
+        const qr = `SELECT * FROM appointments `
+
+        const patientsappointements = await db.query(qr)
+        return patientsappointements
+    } catch (err) {
+        console.log('Error fetching patients details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
 module.exports = {
     getCurrentMonthPatients,
     getSelectedMonthPatients,
@@ -200,7 +215,8 @@ module.exports = {
     getSelectedMonthPatientsappointments,
     getPatientsappointmentbyDate,
     bookAppointmentsList,
-    checkAppointmentBooked
+    checkAppointmentBooked,
+    getPatientsAppointments
 }
 
 

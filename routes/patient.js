@@ -13,9 +13,11 @@ router.get('/current-month-patients-appointments',jwt.verifyToken, patientContro
 
 router.get('/selected-month-patients-appointments',jwt.verifyToken, patientController.getSelectedMonthPatientsappointments)
 
-router.get('/selected-day-patients-appointments',jwt.verifyToken, patientController.getPatientsappointmentbyDate)
+router.get('/selected-day-patients-appointments',jwt.verifyToken, patientController.getPatientsAppointmentbyDate)
 
 router.post('/book-Appointments',jwt.verifyToken, patientController.bookAppointmentsList)
+
+router.get('/view-Appointments',jwt.verifyToken, patientController.getPatientsAppointmentsList)
 
 
 
