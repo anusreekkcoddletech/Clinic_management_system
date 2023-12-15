@@ -178,6 +178,20 @@ async function bookAppointmentsList(date, status, patients_id, employees_id) {
     }
   }
 
+  async function checkAppointmentBooked(date,patients_id) {
+    const db = makeDb()
+    try {
+      const qr = 'select * from appointments where date =? AND patients_id=?'
+      const values = [date,patients_id]
+      const appointmentBooked = await db.query(qr, values)
+      return appointmentBooked
+    } catch (err) {
+      console.error('Already booked in this date:', err.message)
+    } finally {
+      await db.close()
+    }
+  }
+
 module.exports = {
     getCurrentMonthPatients,
     getSelectedMonthPatients,
@@ -185,7 +199,8 @@ module.exports = {
     getCurrentMonthPatientsappointments,
     getSelectedMonthPatientsappointments,
     getPatientsappointmentbyDate,
-    bookAppointmentsList
+    bookAppointmentsList,
+    checkAppointmentBooked
 }
 
 

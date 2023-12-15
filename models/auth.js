@@ -42,6 +42,7 @@ async function loginUser(username, password) {
   }
 }
 
+
 module.exports = {
   registerUser,
   checkRegisteredUser,

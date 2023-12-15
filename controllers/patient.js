@@ -101,9 +101,16 @@ const bookAppointmentsList = async function (req, res) {
         if (!date || !status || !patients_id || !employees_id) {
             console.error('Some fields are empty')
             res.status(409).send({ error: 'All fields are required' })
-        }else{
-         await userModel.bookAppointmentsList(date, status, patients_id, employees_id)
-        res.status(200).send({ success: true, message: 'Appointment requested', data: req.body })
+            return
+        }
+        const checkAppointementBooked = await userModel.checkAppointmentBooked(date, patients_id)
+        if (checkAppointementBooked.length > 0) {
+            console.error('User is already booked in this date')
+            res.status(409).send({ error: 'User is already booked in this date' })
+        }
+        else {
+            await userModel.bookAppointmentsList(date, status, patients_id, employees_id)
+            res.status(200).send({ success: true, message: 'Appointment requested', data: req.body })
         }
     } catch (err) {
         console.error('Error executing appointment query:', err.message)
