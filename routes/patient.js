@@ -22,6 +22,7 @@ router.get('/view-Appointments',jwt.verifyToken, patientController.getPatientsAp
 
 
 
+
 module.exports = router
 
 
