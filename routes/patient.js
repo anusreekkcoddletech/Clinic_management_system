@@ -20,6 +20,7 @@ router.post('/book-Appointments',jwt.verifyToken, patientController.bookAppointm
 
 
 
+
 module.exports = router
 
 
