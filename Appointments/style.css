@@ -1,0 +1,15 @@
+#appointments {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 16px;
+    font-family: 'Poppins', sans-serif;
+}
+
+#appointments th, #appointments td {
+    border: 1px solid black;
+    padding: 6px;
+    text-align: center;
+}
+.heading{
+    text-align: center;
+}
