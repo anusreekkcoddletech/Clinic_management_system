@@ -167,45 +167,68 @@ async function getPatientsappointmentbyDate(yesterday, today, tomorrow) {
 async function bookAppointmentsList(date, status, patients_id, employees_id) {
     const db = makeDb()
     try {
-      const qr = 'insert into appointments (date, status, patients_id, employees_id) values (?, ?, ?, ?)'
-      const values = [date, status, patients_id, employees_id]
-      await db.query(qr, values)
+        const qr = 'insert into appointments (date, status, patients_id, employees_id) values (?, ?, ?, ?)'
+        const values = [date, status, patients_id, employees_id]
+        await db.query(qr, values)
     } catch (err) {
-      console.error('Error:', err.message)
+        console.error('Error:', err.message)
     }
     finally {
-      await db.close()
+        await db.close()
     }
-  }
+}
 
-  async function checkAppointmentBooked(date,patients_id) {
+async function checkAppointmentBooked(date, patients_id) {
     const db = makeDb()
     try {
-      const qr = 'select * from appointments where date =? AND patients_id=?'
-      const values = [date,patients_id]
-      const appointmentBooked = await db.query(qr, values)
-      return appointmentBooked
+        const qr = 'select * from appointments where date =? AND patients_id=?'
+        const values = [date, patients_id]
+        const appointmentBooked = await db.query(qr, values)
+        return appointmentBooked
     } catch (err) {
-      console.error('Already booked in this date:', err.message)
+        console.error('Already booked in this date:', err.message)
     } finally {
-      await db.close()
+        await db.close()
     }
-  }
+}
 
 
-  async function getPatientsAppointments() {
+async function getPatientsAppointments() {
     const db = makeDb()
     try {
-        const qr = `SELECT * FROM appointments `
+        const qr = `SELECT * FROM appointments order by date desc`
 
-        const patientsappointements = await db.query(qr)
-        return patientsappointements
+        const patientsappointments = await db.query(qr)
+        return patientsappointments
     } catch (err) {
         console.log('Error fetching patients details:', err.message)
     } finally {
         await db.close()
     }
 }
+
+
+async function getPatientsAppointmentStatus(id, status) {
+    const db = makeDb()
+    const newStatus = ""
+    try {
+        if (status === 1) {
+            newStatus = "booked_appointment"
+        }
+        else if (status === 0) {
+            newStatus = "canceled"
+        }
+        const qr = `update appointments set status=? where id=?`
+        const values = [newStatus, id]
+        const pendingAppointmentStatus = await db.query(qr, values)
+        return pendingAppointmentStatus
+    } catch (err) {
+        console.log('Error fetching status of patients:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
 
 module.exports = {
     getCurrentMonthPatients,
@@ -216,7 +239,8 @@ module.exports = {
     getPatientsappointmentbyDate,
     bookAppointmentsList,
     checkAppointmentBooked,
-    getPatientsAppointments
+    getPatientsAppointments,
+    getPatientsAppointmentStatus
 }
 
 
