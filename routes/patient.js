@@ -19,7 +19,7 @@ router.post('/bookAppointments',jwt.verifyToken, patientController.bookAppointme
 
 router.get('/viewAppointments',jwt.verifyToken, patientController.getPatientsAppointmentsList)
 
-router.post('/updateAppointmentStatus',jwt.verifyToken, patientController.getPatientsAppointmentsStatus)
+router.post('/updateAppointmentStatus',jwt.verifyToken, patientController.updatePatientsAppointmentsStatus)
 
 
 

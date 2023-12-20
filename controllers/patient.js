@@ -131,25 +131,24 @@ const getPatientsAppointmentsList = async (req, res) => {
     }
 }
 
-
-const getPatientsAppointmentsStatus = async (req, res) => {
+const updatePatientsAppointmentsStatus = async function (req, res) {
     try {
-        const { id, status } = req.query
-        if (!id || isNaN(status)) {
+        console.log('appointment status Request Body:', req.body)
+        const { status, patients_id, date } = req.body
+
+        if (date == null || status == null || patients_id == null) {
             console.error('Some fields are empty or invalid value')
-            res.status(409).send({ error: 'Some fields are empty or invalid value' })
-            return
+            return res.status(409).send({ error: 'Some fields are empty or invalid value' })
         }
         else {
-            const patientsAppointmentsStatus = await userModel.getPatientsAppointmentStatus( id,status)
-            res.status(200).send({ success: true, message: 'Patients listed below', data: patientsAppointmentsStatus })
+            await userModel.updatePatientsAppointmentStatus(status, patients_id, date)
+            res.status(200).send({ success: true, message: 'Updated status successfully', data: req.body })
         }
     } catch (err) {
-        console.log('Error fetching data:', err.message)
+        console.error('Error fetching data:', err.message)
         res.status(500).send({ error: 'Failed to fetch data' })
     }
 }
-
 
 module.exports = {
     getCurrentMonthPatients,
@@ -160,7 +159,7 @@ module.exports = {
     getPatientsAppointmentbyDate,
     bookAppointmentsList,
     getPatientsAppointmentsList,
-    getPatientsAppointmentsStatus
+    updatePatientsAppointmentsStatus
 }
 
 
