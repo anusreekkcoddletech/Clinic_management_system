@@ -40,9 +40,7 @@ async function getSelectedMonthPatients(month, year) {
     }
 }
 
-
-
-async function getPatientsbyDate(yesterday, today, tomorrow) {
+async function getPatientsbyDate(yesterday, today) {
     const db = makeDb()
     try {
         if (yesterday && today) {
@@ -163,7 +161,6 @@ async function getPatientsappointmentbyDate(yesterday, today, tomorrow) {
     }
 }
 
-
 async function bookAppointmentsList(date, status, patients_id, employees_id) {
     const db = makeDb()
     try {
@@ -207,21 +204,14 @@ async function getPatientsAppointments() {
     }
 }
 
-
-async function getPatientsAppointmentStatus(id, status) {
+async function updatePatientsAppointmentStatus(status, patients_id, date) {
     const db = makeDb()
-    const newStatus = ""
     try {
-        if (status === 1) {
-            newStatus = "booked_appointment"
-        }
-        else if (status === 0) {
-            newStatus = "canceled"
-        }
-        const qr = `update appointments set status=? where id=?`
-        const values = [newStatus, id]
-        const pendingAppointmentStatus = await db.query(qr, values)
-        return pendingAppointmentStatus
+        const qr = `update appointments set status2=? where patients_id=? and date=?`
+        const values = [status, patients_id, date]
+        const updateAppointmentStatus = await db.query(qr, values)
+        return updateAppointmentStatus
+
     } catch (err) {
         console.log('Error fetching status of patients:', err.message)
     } finally {
@@ -240,7 +230,7 @@ module.exports = {
     bookAppointmentsList,
     checkAppointmentBooked,
     getPatientsAppointments,
-    getPatientsAppointmentStatus
+    updatePatientsAppointmentStatus,
 }
 
 
