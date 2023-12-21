@@ -1,6 +1,5 @@
 const userModel = require('../models/patient')
 
-
 const getSelectedMonthPatients = async (req, res) => {
     try {
         const { month, year } = req.query
@@ -15,7 +14,6 @@ const getSelectedMonthPatients = async (req, res) => {
     }
 }
 
-
 const getSelectedMonthPatientsappointments = async (req, res) => {
     try {
         const { month, year } = req.query
@@ -28,7 +26,6 @@ const getSelectedMonthPatientsappointments = async (req, res) => {
         res.status(500).send({ error: 'Failed to fetch data' })
     }
 }
-
 
 const bookAppointmentsList = async function (req, res) {
     try {
@@ -55,13 +52,12 @@ const bookAppointmentsList = async function (req, res) {
     }
 }
 
-
 const updatePatientsAppointmentsStatus = async function (req, res) {
     try {
         console.log('appointment status Request Body:', req.body)
         const { status, patients_id, date } = req.body
 
-        if (date == null || status == null || patients_id == null) {
+        if (date === null || status === null || patients_id === null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ error: 'Some fields are empty or invalid value' })
         }

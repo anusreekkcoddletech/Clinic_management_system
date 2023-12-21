@@ -15,8 +15,3 @@ router.post('/updateAppointmentStatus',jwt.verifyToken, patientController.update
 
 module.exports = router
 
-
-
-
-
-
