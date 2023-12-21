@@ -13,7 +13,7 @@ function getAppointmentsData() {
         mode: 'cors',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDQsImlhdCI6MTcwMjk2OTk5NywiZXhwIjoxNzAzMDU2Mzk3fQ.FAuceznMoZdDVuBnoT2mJv6_BzF9Ve7cT6kz7CDz2Ko`
+            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDQsImlhdCI6MTcwMzEzNDQ2OSwiZXhwIjoxNzAzMjIwODY5fQ.N_lKrPKJJdcTJ8h0pz4CmQVqUyM9QWD8aWW_t2kuzQs`
         },
     }).then((response) => {
         response.json().then((data) => {

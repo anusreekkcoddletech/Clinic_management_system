@@ -23,7 +23,21 @@ async function getSelectedMonthPatients(month, year) {
     }
 }
 
-async function getPatientsAppointments(month, year) {
+async function getPatientsAppointments() {
+    const db = makeDb()
+    try {
+        const qr = `SELECT * FROM appointments order by date desc`
+
+        const patientsappointments = await db.query(qr)
+        return patientsappointments
+    } catch (err) {
+        console.log('Error fetching patients details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+async function getSelectedPatientsAppointments(month, year) {
     const db = makeDb()
     try {
         if (!month || !year) {
@@ -92,8 +106,9 @@ async function updatePatientsAppointmentStatus(status, patients_id, date) {
 
 module.exports = {
 
-    getPatientsAppointments,
     getSelectedMonthPatients,
+    getSelectedPatientsAppointments,
+    getPatientsAppointments,
     bookAppointmentsList,
     checkAppointmentBooked,
     updatePatientsAppointmentStatus,
