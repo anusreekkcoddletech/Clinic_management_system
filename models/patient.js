@@ -1,6 +1,5 @@
 const { makeDb } = require('../databaseConnect')
 
-
 async function getSelectedMonthPatients(month, year) {
     const db = makeDb()
     try {
@@ -24,7 +23,6 @@ async function getSelectedMonthPatients(month, year) {
     }
 }
 
-
 async function getPatientsAppointments(month, year) {
     const db = makeDb()
     try {
@@ -47,8 +45,6 @@ async function getPatientsAppointments(month, year) {
         await db.close()
     }
 }
-
-
 
 async function bookAppointmentsList(date, status, patients_id, employees_id) {
     const db = makeDb()
