@@ -6,6 +6,9 @@ const jwt=require('../middleware/middleware')
 
 router.get('/selectedMonthPatients',jwt.verifyToken, patientController.getSelectedMonthPatients)
 
+router.get('/viewAppointments',jwt.verifyToken, patientController.getPatientsAppointmentsList)
+
+
 router.get('/selectedMonthPatientsAppointments',jwt.verifyToken, patientController.getSelectedMonthPatientsappointments)
 
 router.post('/bookAppointments',jwt.verifyToken, patientController.bookAppointmentsList)
@@ -14,4 +17,9 @@ router.post('/updateAppointmentStatus',jwt.verifyToken, patientController.update
 
 
 module.exports = router
+
+
+
+
+
 
