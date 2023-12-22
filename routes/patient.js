@@ -8,12 +8,15 @@ router.get('/selectedMonthPatients',jwt.verifyToken, patientController.getSelect
 
 router.get('/viewAppointments',jwt.verifyToken, patientController.getPatientsAppointmentsList)
 
-
 router.get('/selectedMonthPatientsAppointments',jwt.verifyToken, patientController.getSelectedMonthPatientsappointments)
 
 router.post('/bookAppointments',jwt.verifyToken, patientController.bookAppointmentsList)
 
 router.post('/updateAppointmentStatus',jwt.verifyToken, patientController.updatePatientsAppointmentsStatus)
+
+router.post('/addPrescription',jwt.verifyToken, patientController.addPrescriptionDetails)
+
+router.post('/addPrescription',jwt.verifyToken, patientController.addPrescriptionDetails)
 
 
 module.exports = router
