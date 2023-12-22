@@ -41,9 +41,9 @@ const getPatientsAppointmentsList = async (req, res) => {
 const bookAppointmentsList = async function (req, res) {
     try {
         console.log('appointment Request Body:', req.body)
-        const { date, status, patients_id, employees_id } = req.body
+        const { date, status2, patients_id, employees_id } = req.body
 
-        if (!date || !status || !patients_id || !employees_id) {
+        if (!date || !status2 || !patients_id || !employees_id) {
             console.error('Some fields are empty')
             res.status(409).send({ error: 'All fields are required' })
             return
@@ -54,7 +54,7 @@ const bookAppointmentsList = async function (req, res) {
             res.status(409).send({ error: 'User is already booked in this date' })
         }
         else {
-            await userModel.bookAppointmentsList(date, status, patients_id, employees_id)
+            await userModel.bookAppointmentsList(date, status2, patients_id, employees_id)
             res.status(200).send({ success: true, message: 'Appointment requested', data: req.body })
         }
     } catch (err) {
@@ -66,15 +66,34 @@ const bookAppointmentsList = async function (req, res) {
 const updatePatientsAppointmentsStatus = async function (req, res) {
     try {
         console.log('appointment status Request Body:', req.body)
-        const { status, patients_id, date } = req.body
+        const { status2, patients_id, date } = req.body
 
-        if (date === null || status === null || patients_id === null) {
+        if (date === null || status2 === null || patients_id === null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ error: 'Some fields are empty or invalid value' })
         }
         else {
-            await userModel.updatePatientsAppointmentStatus(status, patients_id, date)
+            await userModel.updatePatientsAppointmentStatus(status2, patients_id, date)
             res.status(200).send({ success: true, message: 'Updated status successfully', data: req.body })
+        }
+    } catch (err) {
+        console.error('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+const addPrescriptionDetails = async function (req, res) {
+    try {
+        console.log('Prescription adding Request Body:', req.body)
+        const { appointment_id, Diagnosys, medicine_id } = req.body
+
+        if (appointment_id === null || Diagnosys === null || medicine_id === null) {
+            console.error('Some fields are empty or invalid value')
+            return res.status(409).send({ error: 'Some fields are empty or invalid value' })
+        }
+        else {
+            await userModel.addPatientsPrescription(appointment_id, Diagnosys, medicine_id)
+            res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
         }
     } catch (err) {
         console.error('Error fetching data:', err.message)
@@ -88,7 +107,8 @@ module.exports = {
     getSelectedMonthPatientsappointments,
     bookAppointmentsList,
     updatePatientsAppointmentsStatus,
-    getPatientsAppointmentsList
+    getPatientsAppointmentsList,
+    addPrescriptionDetails
 }
 
 

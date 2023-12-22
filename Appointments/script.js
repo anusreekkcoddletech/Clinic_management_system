@@ -13,7 +13,7 @@ function getAppointmentsData() {
         mode: 'cors',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDQsImlhdCI6MTcwMzEzNDQ2OSwiZXhwIjoxNzAzMjIwODY5fQ.N_lKrPKJJdcTJ8h0pz4CmQVqUyM9QWD8aWW_t2kuzQs`
+            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDQsImlhdCI6MTcwMzIyNDI1NCwiZXhwIjoxNzAzMzEwNjU0fQ.53fKQ-iKH75DCgpm6-nHYgU0Qh7FBKIGGyu9QtX9MAM`
         },
     }).then((response) => {
         response.json().then((data) => {
@@ -21,16 +21,18 @@ function getAppointmentsData() {
         })
     })
 }
-function appointmentsTable(appointments) {    
-    let html= '<table>'
-    for( let i =0 ; i<appointments.length ; i++){
-        html +='<tr>'
-        html +='<td>'+appointments[i].date+'</td>'
-        html +='<td>'+appointments[i].status+'</td>'
-        html +='<td>'+appointments[i].patients_id+'</td>'
-        html +='<td>'+appointments[i].employees_id+'</td>'
-        html +='</tr>'
+function appointmentsTable(appointments) {
+    let html = '<table>'
+    for (let i = 0; i < appointments.length; i++) {
+        html += '<tr>',
+            html += '<td>' + appointments[i].id + '</td>'
+
+        html += '<td>' + appointments[i].date + '</td>'
+        html += '<td>' + appointments[i].status2 + '</td>'
+        html += '<td>' + appointments[i].patients_id+ '</td>'
+        html += '<td>' + appointments[i].employees_id + '</td>'
+        html += '</tr>'
     }
-    html +='</table>'
-    document.querySelector("#tableBody").innerHTML=html
+    html += '</table>'
+    document.querySelector("#tableBody").innerHTML = html
 }
