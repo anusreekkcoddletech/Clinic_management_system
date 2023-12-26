@@ -130,10 +130,10 @@ async function checkMedicineValidity(medicine_id) {
     const db = makeDb()
     try {
         for (i = 0; i < medicine_id.length; i++) {
-        const qr = 'SELECT id FROM pharmacy WHERE id = ?'
+            const qr = 'SELECT id FROM pharmacy WHERE id = ?'
 
-        const result = await db.query(qr, medicine_id[i])
-        return result.length > 0
+            const result = await db.query(qr, medicine_id[i])
+            return result.length > 0
         }
     } catch (err) {
         console.error('Error checking medicine validity:', err.message)
@@ -149,7 +149,7 @@ async function searchMedicines(search) {
         const qr = `select id, name, price from pharmacy where name like ?`
         const values = [`${search}%`]
         console.log(qr)
-        const getMedicines = await db.query(qr,values)
+        const getMedicines = await db.query(qr, values)
         return getMedicines
     } catch (err) {
         console.log('Error fetching medicine details:', err.message)
@@ -174,6 +174,44 @@ async function getPatientsMedicinesDetails() {
     }
 }
 
+
+async function getLowestStockMedicine() {
+    const db = makeDb()
+    try {
+        const qr = `select name,stock from pharmacy where stock<=15`
+
+        const lowStockMedicines = await db.query(qr)
+        return lowStockMedicines
+    } catch (err) {
+        console.log('Error fetching medicine details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+async function getSelectedMonthExpiringMedicines(month, year) {
+    const db = makeDb()
+    try {
+        if (!month || !year) {
+
+            const qr = `SELECT id,name,stock,price,production_date,expiry_date , manufacturer FROM pharmacy WHERE MONTH(expiry_date) = MONTH(CURRENT_DATE()) 
+            AND YEAR(expiry_date) = YEAR(CURRENT_DATE())`
+
+            const currentMonthExpiringMedicines = await db.query(qr)
+            return currentMonthExpiringMedicines
+        }
+        else {
+            const qr1 = `SELECT id,name,stock,price,production_date,expiry_date , manufacturer FROM pharmacy WHERE MONTH(expiry_date) = ${month} AND  YEAR(expiry_date)  = ${year}`
+            const selectedMonthExpiringMedicines = await db.query(qr1)
+            return selectedMonthExpiringMedicines
+        }
+    } catch (err) {
+        console.log('Error fetching data of medicines:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
 module.exports = {
 
     getSelectedMonthPatients,
@@ -185,7 +223,9 @@ module.exports = {
     addPatientsPrescription,
     searchMedicines,
     checkMedicineValidity,
-    getPatientsMedicinesDetails
+    getPatientsMedicinesDetails,
+    getLowestStockMedicine,
+    getSelectedMonthExpiringMedicines
 }
 
 
