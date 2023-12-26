@@ -18,6 +18,8 @@ router.post('/addPrescription',jwt.verifyToken, patientController.addPrescriptio
 
 router.post('/addPrescription',jwt.verifyToken, patientController.addPrescriptionDetails)
 
+router.get('/listMedicines',jwt.verifyToken, patientController.getMedicinesList)
+
 
 module.exports = router
 
