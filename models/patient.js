@@ -26,8 +26,9 @@ async function getSelectedMonthPatients(month, year) {
 async function getPatientsAppointments() {
     const db = makeDb()
     try {
-        const qr = `SELECT a.id ,a.date,a.status2, p.name,e.name FROM appointments a INNER JOIN patients p ON a.patients_id = p.id
-                    INNER JOIN employees e ON a.employees_id = e.id `
+        const qr = `SELECT a.id, a.date, a.status2, p.name AS patient_name, e.name AS doctor_name FROM appointments a
+                    INNER JOIN patients p ON a.patients_id = p.id INNER JOIN employees e ON a.employees_id = e.id`
+
         const patientsappointments = await db.query(qr)
         return patientsappointments
     } catch (err) {
@@ -36,7 +37,6 @@ async function getPatientsAppointments() {
         await db.close()
     }
 }
-
 
 async function getSelectedPatientsAppointments(month, year) {
     const db = makeDb()
@@ -126,6 +126,39 @@ async function addPatientsPrescription(appointment_id, diagnosys, medicine_id) {
     }
 }
 
+async function checkMedicineValidity(medicine_id) {
+    const db = makeDb()
+    try {
+        for (i = 0; i < medicine_id.length; i++) {
+        const qr = 'SELECT id FROM pharmacy WHERE id = ?'
+
+        const result = await db.query(qr, medicine_id[i])
+        return result.length > 0
+        }
+    } catch (err) {
+        console.error('Error checking medicine validity:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+
+async function searchMedicines(search) {
+    const db = makeDb()
+    try {
+        const qr = `select id, name, price from pharmacy where name like ?`
+        const values = [`${search}%`]
+        console.log(qr)
+        const getMedicines = await db.query(qr,values)
+        return getMedicines
+    } catch (err) {
+        console.log('Error fetching medicine details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+
 module.exports = {
 
     getSelectedMonthPatients,
@@ -134,7 +167,9 @@ module.exports = {
     bookAppointmentsList,
     checkAppointmentBooked,
     updatePatientsAppointmentStatus,
-    addPatientsPrescription
+    addPatientsPrescription,
+    searchMedicines,
+    checkMedicineValidity
 }
 
 

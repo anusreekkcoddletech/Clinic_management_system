@@ -13,7 +13,7 @@ function getAppointmentsData() {
         mode: 'cors',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDQsImlhdCI6MTcwMzIyNDI1NCwiZXhwIjoxNzAzMzEwNjU0fQ.53fKQ-iKH75DCgpm6-nHYgU0Qh7FBKIGGyu9QtX9MAM`
+            "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDQsImlhdCI6MTcwMzU2Njc1MCwiZXhwIjoxNzAzNjUzMTUwfQ.m1lfO1c__-YOeFXNP0ojtljsqvVJJOdK_VhJScpZ-ec`
         },
     }).then((response) => {
         response.json().then((data) => {
@@ -29,8 +29,8 @@ function appointmentsTable(appointments) {
 
         html += '<td>' + appointments[i].date + '</td>'
         html += '<td>' + appointments[i].status2 + '</td>'
-        html += '<td>' + appointments[i].patients_id+ '</td>'
-        html += '<td>' + appointments[i].employees_id + '</td>'
+        html += '<td>' + appointments[i].patient_name+ '</td>'
+        html += '<td>' + appointments[i].doctor_name + '</td>'
         html += '</tr>'
     }
     html += '</table>'
