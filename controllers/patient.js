@@ -133,6 +133,29 @@ const getPatientsMedicinesList = async (req, res) => {
     }
 }
 
+const getLowStockMedicinesList = async (req, res) => {
+    try {
+        const getLowestStockMedicine = await userModel.getLowestStockMedicine()
+        res.status(200).send({ success: true, message: 'medicines listed below', data: getLowestStockMedicine })
+
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+const selectedMonthExpiringMedicines = async (req, res) => {
+    try {
+        const { month, year } = req.query
+        const selectedMonthExpiringMedicines = await userModel.getSelectedMonthExpiringMedicines(month, year)
+        console.log(selectedMonthExpiringMedicines)
+
+        res.status(200).send({ success: true, message: 'Patients listed below', data: selectedMonthExpiringMedicines })
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
 
 module.exports = {
     getSelectedMonthPatientsappointments,
@@ -143,7 +166,9 @@ module.exports = {
     getPatientsAppointmentsList,
     addPrescriptionDetails,
     getMedicinesList,
-    getPatientsMedicinesList
+    getPatientsMedicinesList,
+    getLowStockMedicinesList,
+    selectedMonthExpiringMedicines
 }
 
 
