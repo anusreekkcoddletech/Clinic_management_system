@@ -159,6 +159,21 @@ async function searchMedicines(search) {
 }
 
 
+async function getPatientsMedicinesDetails() {
+    const db = makeDb()
+    try {
+        const qr = `SELECT a.id as AppointmentID, a.created as PurchaseDate, phar.name AS medicineName FROM appointments a
+        INNER JOIN medicine m ON m.appointment_id = a.id INNER JOIN pharmacy phar ON m.medicine_id = phar.id`
+
+        const PurchasedMedicines = await db.query(qr)
+        return PurchasedMedicines
+    } catch (err) {
+        console.log('Error fetching medicine details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
 module.exports = {
 
     getSelectedMonthPatients,
@@ -169,7 +184,8 @@ module.exports = {
     updatePatientsAppointmentStatus,
     addPatientsPrescription,
     searchMedicines,
-    checkMedicineValidity
+    checkMedicineValidity,
+    getPatientsMedicinesDetails
 }
 
 

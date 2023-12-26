@@ -122,6 +122,18 @@ const getMedicinesList = async (req, res) => {
     }
 }
 
+const getPatientsMedicinesList = async (req, res) => {
+    try {
+        const patientsPurchasedMedicines = await userModel.getPatientsMedicinesDetails()
+        res.status(200).send({ success: true, message: 'Patients listed below', data: patientsPurchasedMedicines })
+
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        res.status(500).send({ error: 'Failed to fetch data' })
+    }
+}
+
+
 module.exports = {
     getSelectedMonthPatientsappointments,
     getSelectedMonthPatients,
@@ -130,7 +142,8 @@ module.exports = {
     updatePatientsAppointmentsStatus,
     getPatientsAppointmentsList,
     addPrescriptionDetails,
-    getMedicinesList
+    getMedicinesList,
+    getPatientsMedicinesList
 }
 
 
