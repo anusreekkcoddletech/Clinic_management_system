@@ -26,6 +26,10 @@ router.get('/lowStockMedicines',jwt.verifyToken, patientController.getLowStockMe
 
 router.get('/selectedMonthExpiringMedicines',jwt.verifyToken, patientController.selectedMonthExpiringMedicines)
 
+router.post('/addEmployeesWorkschedule',jwt.verifyToken, patientController.addEmployeesWorkSchedule)
+
+router.post('/addMedicineToPharmacy',jwt.verifyToken, patientController.addMedicineToPharmacy)
+
 
 
 module.exports = router
