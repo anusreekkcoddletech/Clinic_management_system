@@ -104,17 +104,17 @@ async function updatePatientsAppointmentStatus(status2, patients_id, date) {
     }
 }
 
-async function addPatientsPrescription(appointment_id, diagnosys, medicine_id) {
+async function addPatientsPrescription(appointment_id, diagnosys, medicine_id,Prescribed_quantity) {
     const db = makeDb()
     try {
         const qr = 'insert into prescriptions (appointment_id,diagnosys) values (?,?)'
-        const values = [appointment_id, diagnosys]
+        const values = [appointment_id, diagnosys,Prescribed_quantity]
         await db.query(qr, values)
 
         for (i = 0; i < medicine_id.length; i++) {
 
-            const qr1 = 'insert into medicine (appointment_id,medicine_id) values (?,?)'
-            const values1 = [appointment_id, medicine_id[i]]
+            const qr1 = 'insert into medicine (appointment_id,medicine_id,Prescribed_quantity) values (?,?,?)'
+            const values1 = [appointment_id, medicine_id[i],Prescribed_quantity]
 
             await db.query(qr1, values1)
         }
@@ -181,7 +181,7 @@ async function getLowestStockMedicine() {
         const qr = `select name,stock from pharmacy where stock<=15`
 
         const lowStockMedicines = await db.query(qr)
-        return lowStockMedicines
+        console.log(lowStockMedicines)
     } catch (err) {
         console.log('Error fetching medicine details:', err.message)
     } finally {
@@ -212,6 +212,82 @@ async function getSelectedMonthExpiringMedicines(month, year) {
     }
 }
 
+async function addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId) {
+    const db = makeDb()
+    try {
+        const qr = 'insert into workschedules (date,time_from,time_to,employees_id) values (?,?,?,?)'
+        const values = [date, timeFrom, timeTo, employeesId]
+        await db.query(qr, values)
+
+    } catch (err) {
+        console.error('Error:', err.message)
+    }
+    finally {
+        await db.close()
+    }
+}
+
+async function checkEmployeesDepartment(department) {
+    const db = makeDb()
+    try {
+        const qr = 'select name from departments where name=?'
+        const result = await db.query(qr, department)
+        return result.length > 0
+    } catch (err) {
+        console.error('Error checking department:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+async function checkWorkscheduleAdded( date,employeesId) {
+    const db = makeDb()
+    try {
+        const qr = `select employees_id from workschedules where date=? AND employees_id=?`
+
+        const values = [ date,employeesId]
+        const checkWorkschedule = await db.query(qr,values)
+        return checkWorkschedule.length > 0
+
+    } catch (err) {
+        console.log('Error fetching work details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+async function addMedicine(name, stock, price, production_date, dosage, expiry_date, manufacturer) {
+    const db = makeDb()
+    try {
+        const qr = 'insert into pharmacy (name, stock, price, production_date,dosage,expiry_date,manufacturer) values (?,?,?,?,?,?,?)'
+        const values = [name, stock, price, production_date, dosage, expiry_date, manufacturer]
+        await db.query(qr, values)
+
+    } catch (err) {
+        console.error('Error:', err.message)
+    }
+    finally {
+        await db.close()
+    }
+}
+
+async function checkLowestStockMedicine( name, manufacturer) {
+    const db = makeDb()
+    try {
+        const qr = `select name,manufacturer from pharmacy where stock<=15 AND name=? AND manufacturer=?`
+
+        const values = [ name, manufacturer]
+        const lowStockMedicines = await db.query(qr,values)
+        return lowStockMedicines.length > 0
+
+    } catch (err) {
+        console.log('Error fetching medicine details:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+
 module.exports = {
 
     getSelectedMonthPatients,
@@ -225,7 +301,12 @@ module.exports = {
     checkMedicineValidity,
     getPatientsMedicinesDetails,
     getLowestStockMedicine,
-    getSelectedMonthExpiringMedicines
+    getSelectedMonthExpiringMedicines,
+    addEmployeesWorkschedule,
+    checkEmployeesDepartment,
+    addMedicine,
+    checkLowestStockMedicine,
+    checkWorkscheduleAdded
 }
 
 

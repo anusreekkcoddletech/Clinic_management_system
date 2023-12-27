@@ -86,9 +86,9 @@ const updatePatientsAppointmentsStatus = async function (req, res) {
 const addPrescriptionDetails = async function (req, res) {
     try {
         console.log('Prescription adding Request Body:', req.body)
-        const { appointment_id, Diagnosys, medicine_id } = req.body
+        const { appointment_id, Diagnosys, medicine_id,Prescribed_quantity } = req.body
 
-        if (appointment_id == null || Diagnosys == null || medicine_id == null ) {
+        if (appointment_id == null || Diagnosys == null || medicine_id == null || Prescribed_quantity == null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ error: 'Some fields are empty or invalid value' })
         }
@@ -99,7 +99,7 @@ const addPrescriptionDetails = async function (req, res) {
             return res.status(500).send({ error: 'Invalid medicine_id provided' })
         }
         else {
-            await userModel.addPatientsPrescription(appointment_id, Diagnosys, medicine_id)
+            await userModel.addPatientsPrescription(appointment_id, Diagnosys, medicine_id,Prescribed_quantity)
             res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
         }
     } catch (err) {
@@ -157,6 +157,60 @@ const selectedMonthExpiringMedicines = async (req, res) => {
     }
 }
 
+const addEmployeesWorkSchedule = async function (req, res) {
+    try {
+        console.log('workschedule adding Request Body:', req.body)
+        const { date, timeFrom, timeTo, employeesId, department } = req.body
+
+        if (date == null || timeFrom == null || timeTo == null || employeesId == null || department == null) {
+            console.error('Some fields are empty or invalid value')
+            return res.status(409).send({ error: 'Some fields are empty or invalid value' })
+        }
+        const departmentCheck = await userModel.checkEmployeesDepartment(department)
+        if (!departmentCheck) {
+            console.error('Invalid department provided');
+            return res.status(500).send({ error: 'Invalid department provided' })
+        }
+        const checkWorkAdded = await userModel.checkWorkscheduleAdded( date,employeesId)
+        if (checkWorkAdded) {
+            console.error('Already assigned job');
+            return res.status(500).send({ error: 'Already assigned job' })
+        }
+        else {
+            await userModel.addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId)
+            return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
+        }
+    } catch (err) {
+        console.error('Error inserting data:', err.message)
+        return res.status(500).send({ error: 'Failed to insert data' })
+    }
+}
+
+const addMedicineToPharmacy = async function (req, res) {
+
+    try {
+        console.log('Medicine adding Request Body:', req.body)
+        const { name, stock, price, production_date, dosage, expiry_date, manufacturer } = req.body
+
+        if (name == null || stock == null || price == null || production_date == null || dosage == null || expiry_date == null || manufacturer == null) {
+            console.error('Some fields are empty or invalid value')
+            return res.status(409).send({ error: 'Some fields are empty or invalid value' })
+        }
+        const medicineCheck = await userModel.checkLowestStockMedicine( name, manufacturer)
+        if (!medicineCheck) {
+            console.error('Stock checked! No need for new stock')
+            return res.status(500).send({ error: 'Stock checked! No need for new stock' })
+        }
+        else {
+            await userModel.addMedicine(name, stock, price, production_date, dosage, expiry_date, manufacturer)
+            return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
+        }
+    } catch (err) {
+        console.error('Error inserting data:', err.message)
+        return res.status(500).send({ error: 'Failed to insert data' })
+    }
+}
+
 module.exports = {
     getSelectedMonthPatientsappointments,
     getSelectedMonthPatients,
@@ -168,7 +222,9 @@ module.exports = {
     getMedicinesList,
     getPatientsMedicinesList,
     getLowStockMedicinesList,
-    selectedMonthExpiringMedicines
+    selectedMonthExpiringMedicines,
+    addEmployeesWorkSchedule,
+    addMedicineToPharmacy
 }
 
 
