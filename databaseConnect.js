@@ -21,7 +21,7 @@ function makeDb() {
                 .call(con, qr, values)
         },
         close() {
-            return util.promisify(con.end).call(con);
+            return util.promisify(con.end).call(con)
         }
     }
 }

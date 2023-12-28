@@ -12,25 +12,6 @@ router.get('/selectedMonthPatientsAppointments',jwt.verifyToken, patientControll
 
 router.post('/bookAppointments',jwt.verifyToken, patientController.bookAppointmentsList)
 
-router.post('/updateAppointmentStatus',jwt.verifyToken, patientController.updatePatientsAppointmentsStatus)
-
-router.post('/addPrescription',jwt.verifyToken, patientController.addPrescriptionDetails)
-
-router.post('/addPrescription',jwt.verifyToken, patientController.addPrescriptionDetails)
-
-router.get('/listMedicines',jwt.verifyToken, patientController.getMedicinesList)
-
-router.get('/listPurchasedMedicines',jwt.verifyToken, patientController.getPatientsMedicinesList)
-
-router.get('/lowStockMedicines',jwt.verifyToken, patientController.getLowStockMedicinesList)
-
-router.get('/selectedMonthExpiringMedicines',jwt.verifyToken, patientController.selectedMonthExpiringMedicines)
-
-router.post('/addEmployeesWorkschedule',jwt.verifyToken, patientController.addEmployeesWorkSchedule)
-
-router.post('/addMedicineToPharmacy',jwt.verifyToken, patientController.addMedicineToPharmacy)
-
-
 
 module.exports = router
 
