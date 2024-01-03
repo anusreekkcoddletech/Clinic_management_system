@@ -1,11 +1,11 @@
 
 const { makeDb } = require('../databaseConnect')
 
-async function registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id) {
+async function registerUser(name, username, password, age, gender, phone, bloodGroup, employeesId) {
   const db = makeDb()
   try {
     const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup,employees_id) values (?, ?, ?, ?, ?, ?, ?,?)'
-    const values = [name, username, password, age, gender, phone, bloodgroup, employees_id]
+    const values = [name, username, password, age, gender, phone, bloodGroup, employeesId]
     await db.query(qr, values)
   } catch (err) {
     console.error('Error:', err.message)

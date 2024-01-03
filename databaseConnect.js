@@ -10,16 +10,18 @@ function makeDb() {
     })
     con.connect(function (err) {
         if (err) {
-            console.error('Error connecting to database:', err.message)
+            console.log('Error connecting to database:', err.message)
         } else {
             console.log('Connected to database')
         }
-        
     })
     return {
         query(qr, values) {
             return util.promisify(con.query)
                 .call(con, qr, values)
+                .catch((err) => {
+                    console.log('Database connection error:', err.message)
+                  })
         },
         close() {
             return util.promisify(con.end).call(con)
@@ -29,9 +31,6 @@ function makeDb() {
 module.exports = {
     makeDb
 }
-
-
-
 
 
 

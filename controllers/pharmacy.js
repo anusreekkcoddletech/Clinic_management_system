@@ -56,14 +56,14 @@ const addMedicineToPharmacy = async function (req, res) {
 
     try {
         console.log('Medicine adding Request Body:', req.body)
-        const { name, stock, price, production_date, dosage, expiry_date, manufacturer } = req.body
+        const { name, stock, price, productionDate, dosage, expiryDate, manufacturer } = req.body
 
-        if (name == null || stock == null || price == null || production_date == null || dosage == null || expiry_date == null || manufacturer == null) {
+        if (name == null || stock == null || price == null || productionDate == null || dosage == null || expiryDate == null || manufacturer == null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message:'Some fields are empty or invalid value'})
         }
         else {
-            await userModel.addMedicine(name, stock, price, production_date, dosage, expiry_date, manufacturer)
+            await userModel.addMedicine(name, stock, price, productionDate, dosage, expiryDate, manufacturer)
             return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
         }
     } catch (err) {

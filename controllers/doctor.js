@@ -3,15 +3,15 @@ const userModel = require('../models/doctor')
 const updatePatientsAppointmentsStatus = async function (req, res) {
     try {
         console.log('appointment status Request Body:', req.body)
-        const { status2, patients_id, date } = req.body
+        const { status2, patientsId, date } = req.body
 
-        if (date === null || status2 === null || patients_id === null) {
+        if (date === null || status2 === null || patientsId === null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value'})
 
         }
         else {
-            return await userModel.updatePatientsAppointmentStatus(status2, patients_id, date)
+            return await userModel.updatePatientsAppointmentStatus(status2, patientsId, date)
             res.status(200).send({ success: true, message: 'Updated status successfully', data: req.body })
         }
        
@@ -24,13 +24,13 @@ const updatePatientsAppointmentsStatus = async function (req, res) {
 const addPrescriptionDetails = async function (req, res) {
     try {
         console.log('Prescription adding Request Body:', req.body)
-        const { appointment_id, Diagnosys, medicine_id, Prescribed_quantity } = req.body
+        const { appointmentId, Diagnosys, medicineId, PrescribedQuantity } = req.body
 
-        if (appointment_id == null || Diagnosys == null || medicine_id == null || Prescribed_quantity == null) {
+        if (appointmentId == null || Diagnosys == null || medicineId == null || PrescribedQuantity == null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value'})  
         }
-        const medicineValidCheck = await userModel.checkMedicineValidity(medicine_id)
+        const medicineValidCheck = await userModel.checkMedicineValidity(medicineId)
 
         if (!medicineValidCheck) {
             console.error('Invalid medicine_id provided');
@@ -38,7 +38,7 @@ const addPrescriptionDetails = async function (req, res) {
 
         }
         else {
-            await userModel.addPatientsPrescription(appointment_id, Diagnosys, medicine_id, Prescribed_quantity)
+            await userModel.addPatientsPrescription(appointmentId, Diagnosys, medicineId, PrescribedQuantity)
             return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
         }
     } catch (err) {
@@ -51,7 +51,6 @@ const getMedicinesList = async (req, res) => {
     try {
         const { search } = req.query
         const medicineList = await userModel.searchMedicines(search)
-        console.log(medicineList)
         return res.status(200).send({ success: true, message: 'Data fetched successfully', data: medicineList })
 
     } catch (err) {
@@ -63,22 +62,25 @@ const getMedicinesList = async (req, res) => {
 
 const addAppointmentLimit = async (req, res) => {
     try {
-        console.log('Appointment Limit Adding Request Body:', req.body)
-        const { date, employees_id, limit } = req.body
 
-        if (date == null || employees_id == null || limit == null) {
+        console.log('Appointment Limit Adding Request Body:', req.body)
+        const { employeesId, limit } = req.body
+
+        if ( employeesId == null || limit == null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value'})
         }
-        const checkLimitAdded = await userModel.checkAppointmentLimitAdded(date, employees_id)
-        if (checkLimitAdded) {
-            console.error('Already Fixed A Limit For This Date');
-           return res.status(500).send({ success: false, message:  'Already Fixed A Limit For This Date'})
+        const existingDoctor = await userModel.checkAppointmentLimitAdded(employeesId)
+        if (!existingDoctor) {
+        await userModel.setAppointmentLimit( employeesId, limit)
+        return res.status(200).send({ success: true, message: 'Data inserted successfully', data: req.body})
+        }
+        else{
+            await userModel.updateAppointmentLimit( employeesId, limit)
+            return res.status(200).send({ success: true, message: 'Data updated successfully', data: req.body})    
 
         }
-        const addLimitOfAppointments = await userModel.setAppointmentLimit(date, employees_id, limit)
-        return res.status(200).send({ success: true, message: 'Data inserted successfully'})
-
+   
     } catch (err) {
         console.log('Error insert data:', err.message)
         res.status(500).send({ success: false, message: 'Failed to insert data' })
