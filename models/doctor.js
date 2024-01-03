@@ -1,31 +1,31 @@
 const { makeDb } = require('../databaseConnect')
 
 
-async function updatePatientsAppointmentStatus(status2, patients_id, date) {
+async function updatePatientsAppointmentStatus(status2, patientsId, date) {
     const db = makeDb()
     try {
         const qr = `update appointments set status2=? where patients_id=? and date=?`
-        const values = [status2, patients_id, date]
+        const values = [status2, patientsId, date]
         const updateAppointmentStatus = await db.query(qr, values)
         return updateAppointmentStatus
 
     } catch (err) {
-        console.log('Error fetching status of patients:', err.message)
+        console.log('Error updating status of patients:', err.message)
     } finally {
         await db.close()
     }
 }
 
-async function addPatientsPrescription(appointment_id, diagnosys, medicine_id, Prescribed_quantity) {
+async function addPatientsPrescription(appointmentId, diagnosys, medicineId, PrescribedQuantity) {
     const db = makeDb()
     try {
         const qr = 'insert into prescriptions (appointment_id,diagnosys) values (?,?)'
-        const values = [appointment_id, diagnosys, Prescribed_quantity]
+        const values = [appointmentId, diagnosys, PrescribedQuantity]
         await db.query(qr, values)
 
-        for (i = 0; i < medicine_id.length; i++) {
+        for (i = 0; i < medicineId.length; i++) {
                     const qr1 = 'insert into medicine (appointment_id,medicine_id,Prescribed_quantity) values (?,?,?)'
-                    const values1 = [appointment_id, medicine_id[i], Prescribed_quantity[i]]
+                    const values1 = [appointmentId, medicineId[i], PrescribedQuantity[i]]
 
                     await db.query(qr1, values1)
                 }
@@ -37,13 +37,13 @@ async function addPatientsPrescription(appointment_id, diagnosys, medicine_id, P
     }
 }
 
-async function checkMedicineValidity(medicine_id) {
+async function checkMedicineValidity(medicineId) {
     const db = makeDb()
     try {
-        for (i = 0; i < medicine_id.length; i++) {
+        for (i = 0; i < medicineId.length; i++) {
             const qr = 'SELECT id FROM pharmacy WHERE id = ?'
 
-            const result = await db.query(qr, medicine_id[i])
+            const result = await db.query(qr, medicineId[i])
             return result.length > 0
         }
     } catch (err) {
@@ -68,11 +68,11 @@ async function searchMedicines(search) {
     }
 }
 
-async function setAppointmentLimit(date, employees_id, limit) {
+async function setAppointmentLimit( employeesId, limit) {
     const db = makeDb()
     try {
-        const qr = 'INSERT INTO appointment_limits (date, employees_id, appointment_limit) VALUES (?, ?, ?)'
-        const values = [date, employees_id, limit]
+        const qr = 'INSERT INTO appointment_limits ( employees_id, appointment_limit) VALUES ( ?, ?)'
+        const values = [ employeesId, limit]
         const result=await db.query(qr, values)
         return result
     } catch (err) {
@@ -83,22 +83,36 @@ async function setAppointmentLimit(date, employees_id, limit) {
 }
 
 
-async function checkAppointmentLimitAdded(date, employees_id) {
+async function checkAppointmentLimitAdded(employeesId) {
     const db = makeDb()
     try {
-        const qr = `select id from appointment_limits where date=? AND employees_id=?`
-
-        const values = [date, employees_id]
+        const qr = `select id from appointment_limits where employees_id=?`
+        const values = [employeesId]
         const checkLimit = await db.query(qr, values)
         return checkLimit.length > 0
 
     } catch (err) {
-        console.log('Error fetching work details:', err.message)
+        console.log('Error fetching appointment details:', err.message)
 
     } finally {
         await db.close()
     }
 }
+
+async function updateAppointmentLimit( employeesId, limit) {
+    const db = makeDb()
+    try {
+        const qr = 'UPDATE appointment_limits SET appointment_limit=? where employees_id=? '
+        const values = [ limit, employeesId]
+        const result=await db.query(qr, values)
+        return result
+    } catch (err) {
+        console.error('Error inserting data :', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
 
 module.exports = {
     updatePatientsAppointmentStatus,
@@ -106,5 +120,6 @@ module.exports = {
     checkMedicineValidity,
     searchMedicines,
     setAppointmentLimit,
-    checkAppointmentLimitAdded
+    checkAppointmentLimitAdded,
+    updateAppointmentLimit,
 }

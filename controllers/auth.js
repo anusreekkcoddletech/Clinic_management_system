@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken')
 const register = async function (req, res) {
   try {
     console.log('Registration Request Body:', req.body)
-    const { name, username, password, age, gender, phone, bloodgroup, employees_id } = req.body
-    if (!name || !username || !password || !age || !gender || !phone || !bloodgroup || !employees_id) {
+    const { name, username, password, age, gender, phone, bloodGroup, employeesId } = req.body
+    if (!name || !username || !password || !age || !gender || !phone || !bloodGroup || !employeesId) {
       console.error('Some fields are empty')
       res.status(409).send({ success: false, message: 'All fields are required' })
 
@@ -18,7 +18,7 @@ const register = async function (req, res) {
       res.status(409).send({ success: false, message: 'User is already registered' })
 
     } else {
-      await userModel.registerUser(name, username, password, age, gender, phone, bloodgroup, employees_id)
+      await userModel.registerUser(name, username, password, age, gender, phone, bloodGroup, employeesId)
       res.status(200).send({ success: true, message: 'registration completed' })
     }
   } catch (err) {

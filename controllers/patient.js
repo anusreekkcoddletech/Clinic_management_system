@@ -6,9 +6,7 @@ const getSelectedMonthPatients = async (req, res) => {
         const { month, year } = req.query
         const selectedMonthPatients = await userModel.getSelectedMonthPatients(month, year)
         console.log(selectedMonthPatients)
-        if (selectedMonthPatients.error) {
-            return res.status(500).send({ success: false, message: selectedMonthPatients.error })
-        }
+        
         return res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatients })
 
     } catch (err) {
@@ -46,9 +44,9 @@ const getPatientsAppointmentsList = async (req, res) => {
 const bookAppointmentsList = async function (req, res) {
     try {
         console.log('appointment Request Body:', req.body)
-        const { patients_id, employees_id, date, time } = req.body
+        const { patientsId, employeesId, date, time } = req.body
 
-        if (!patients_id || !employees_id || !date || !time) {
+        if (!patientsId || !employeesId || !date || !time) {
             console.error('Some fields are empty')
             return res.status(409).send({ success: false, message: 'All fields are required' })
 
@@ -59,17 +57,17 @@ const bookAppointmentsList = async function (req, res) {
             return res.status(409).send({ success: false, message: 'This time range already booked!' })
 
         }
-        const limitValue = await userModel.getAppointmentLimit(date, employees_id)
+        const limitValue = await userModel.getAppointmentLimit(date, employeesId)
         if (limitValue !== null) {
 
-            const bookedAppointments = await userModel.checkNumberOfAppointments(date, employees_id)
+            const bookedAppointments = await userModel.checkNumberOfAppointments(date, employeesId)
             if (bookedAppointments >= limitValue) {
                 console.error('Maximum number of appointment booked for this date!')
                 return res.status(409).send({ success: false, message: 'Maximum number of appointment booked for this date!' })
             }
         }
 
-        const booked = await userModel.bookAppointmentsList(patients_id, employees_id, date, time)
+        const booked = await userModel.bookAppointmentsList(patientsId, employeesId, date, time)
         if (booked) {
             return res.status(200).send({ success: true, message: 'Requested successfully', data: req.body })
         } else {

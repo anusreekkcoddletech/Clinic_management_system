@@ -3,9 +3,7 @@ const { makeDb } = require('../databaseConnect')
 async function getSelectedMonthPatients(month, year) {
     const db = makeDb()
     try {
-        // if (!db.isConnected()) {
-        //     console.log('Databse connection error! ', err.message)
-        // }
+    
         if (!month || !year) {
 
             const qr = `SELECT * FROM patients WHERE MONTH(created) = MONTH(CURRENT_DATE()) 
@@ -80,11 +78,11 @@ async function checkAppointmentBooked(time,date) {
 }
 
 
-async function checkNumberOfAppointments(date,employees_id) {
+async function checkNumberOfAppointments(date,employeesId) {
     const db = makeDb()
     try {
         const qr = 'select count(id) as count from appointments where date =? AND employees_id=?'
-        const values = [date,employees_id]
+        const values = [date,employeesId]
         const appointmentCount = await db.query(qr, values)
         return appointmentCount[0].count
     } catch (err) {
@@ -96,12 +94,12 @@ async function checkNumberOfAppointments(date,employees_id) {
 
 
 
-async function getAppointmentLimit(date, employees_id) {
+async function getAppointmentLimit(date, employeesId) {
     const db = makeDb()
 
     try {
         const qr = 'SELECT appointment_limit FROM appointment_limits WHERE date = ? AND employees_id = ?'
-        const values = [date, employees_id]
+        const values = [date, employeesId]
         const result = await db.query(qr, values)
 
         if (result.length > 0) {
@@ -117,11 +115,11 @@ async function getAppointmentLimit(date, employees_id) {
 }
 
 
-async function bookAppointmentsList( patients_id, employees_id,date,time) {
+async function bookAppointmentsList( patientsId, employeesId,date,time) {
     const db = makeDb()
     try {
         const qr = 'insert into appointments ( patients_id, employees_id,date,time) values (?, ?, ?, ?)'
-        const values = [ patients_id, employees_id,date,time]
+        const values = [ patientsId, employeesId,date,time]
         await db.query(qr, values)
         return true
 
