@@ -6,12 +6,15 @@ const getSelectedMonthPatients = async (req, res) => {
         const { month, year } = req.query
         const selectedMonthPatients = await userModel.getSelectedMonthPatients(month, year)
         console.log(selectedMonthPatients)
-
-        res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatients })
+        if (selectedMonthPatients.error) {
+            return res.status(500).send({ success: false, message: selectedMonthPatients.error })
+        }
+        return res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatients })
 
     } catch (err) {
         console.log('Error fetching data:', err.message)
-        res.status(500).send({ error: 'Failed to fetch data' })
+        return res.status(500).send({ success: false, message: 'Failed to fetch data' })
+
     }
 }
 
@@ -21,54 +24,62 @@ const getSelectedMonthPatientsappointments = async (req, res) => {
         const selectedMonthPatientsappointments = await userModel.getSelectedPatientsAppointments(month, year)
         console.log(selectedMonthPatientsappointments)
 
-        res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatientsappointments })
+        return res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatientsappointments })
     } catch (err) {
         console.log('Error fetching data:', err.message)
-        res.status(500).send({ error: 'Failed to fetch data' })
+        return res.status(500).send({ error: 'Failed to fetch data' })
     }
 }
 
 const getPatientsAppointmentsList = async (req, res) => {
     try {
         const patientsappointmentbyDate = await userModel.getPatientsAppointments()
-        res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientsappointmentbyDate })
+        return res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientsappointmentbyDate })
 
     } catch (err) {
         console.log('Error fetching data:', err.message)
-        res.status(500).send({ error: 'Failed to fetch data' })
+        return res.status(500).send({ success: false, message: 'Failed to fetch data' })
+
     }
 }
 
 const bookAppointmentsList = async function (req, res) {
     try {
         console.log('appointment Request Body:', req.body)
-        const {  patients_id, employees_id,date,time } = req.body
+        const { patients_id, employees_id, date, time } = req.body
 
         if (!patients_id || !employees_id || !date || !time) {
             console.error('Some fields are empty')
-            res.status(409).send({ error: 'All fields are required' })
-            return
+            return res.status(409).send({ success: false, message: 'All fields are required' })
+
         }
-        const checkAppointmentBooked = await userModel.checkAppointmentBooked(time,date)
+        const checkAppointmentBooked = await userModel.checkAppointmentBooked(time, date)
         if (checkAppointmentBooked.length > 0) {
             console.error('This time range already booked!')
-            res.status(409).send({ error: 'This time range already booked!' })
+            return res.status(409).send({ success: false, message: 'This time range already booked!' })
+
         }
-        const checkAppointmentNumber = await userModel.checkNumberOfAppointments(date,employees_id)
-        if (checkAppointmentNumber.length > 20) {
-            console.error('Maximum number of appointment booked for this date!')
-            res.status(409).send({ error: 'Maximum number of appointment booked for this date!' })
+        const limitValue = await userModel.getAppointmentLimit(date, employees_id)
+        if (limitValue !== null) {
+
+            const bookedAppointments = await userModel.checkNumberOfAppointments(date, employees_id)
+            if (bookedAppointments >= limitValue) {
+                console.error('Maximum number of appointment booked for this date!')
+                return res.status(409).send({ success: false, message: 'Maximum number of appointment booked for this date!' })
+            }
         }
-        else {
-            await userModel.bookAppointmentsList( patients_id, employees_id,date,time)
-            res.status(200).send({ success: true, message: 'Requested successfully', data: req.body })
+
+        const booked = await userModel.bookAppointmentsList(patients_id, employees_id, date, time)
+        if (booked) {
+            return res.status(200).send({ success: true, message: 'Requested successfully', data: req.body })
+        } else {
+            return res.status(409).send({ success: false, message: 'Booking failed' });
         }
     } catch (err) {
         console.error('Error executing appointment query:', err.message)
-        res.status(500).send({ error: 'Booking failed' })
+        return res.status(200).send({ success: false, message: 'Booking failed' })
     }
 }
-
 
 module.exports = {
     getSelectedMonthPatientsappointments,

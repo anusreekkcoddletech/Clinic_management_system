@@ -10,4 +10,6 @@ router.post('/addPrescription',jwt.verifyToken, doctorController.addPrescription
 
 router.get('/listMedicines',jwt.verifyToken, doctorController.getMedicinesList)
 
+router.post('/setAppointmentLimit',jwt.verifyToken, doctorController.addAppointmentLimit)
+
 module.exports = router

@@ -3,11 +3,13 @@ const userModel = require('../models/pharmacy')
 const getPatientsMedicinesList = async (req, res) => {
     try {
         const patientsPurchasedMedicines = await userModel.getPatientsMedicinesDetails()
-        res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientsPurchasedMedicines })
+        return res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientsPurchasedMedicines })
 
     } catch (err) {
         console.log('Error fetching data:', err.message)
-        res.status(500).send({ error: 'Failed to fetch data' })
+        return res.status(500).send({ success: false, message: 'Failed to fetch data' })
+
+
     }
 }
 
@@ -18,23 +20,25 @@ const getLowStockMedicinesList = async (req, res) => {
 
         if (stock == null) {
             console.error('Invalid stock limit value')
-            return res.status(409).send({ error: 'Invalid stock limit value' })
-        } 
-            const getLowestStockMedicine = await userModel.getLowestStockMedicine(stock)
-            console.log(getLowestStockMedicine)
-            if (getLowestStockMedicine.length<=0) {
-                console.error('There is no given stock limit medicine ');
-                return res.status(500).send({ error: 'There is no given stock limit medicine ' })
-            }
-            else {
-            res.status(200).send({ success: true, message: 'Data fetched successfully', data: getLowestStockMedicine })
+            return res.status(409).send({ success: false, message: 'Invalid stock limit value' })
+
+        }
+        const getLowestStockMedicine = await userModel.getLowestStockMedicine(stock)
+        console.log(getLowestStockMedicine)
+        if (getLowestStockMedicine.length <= 0) {
+            console.error('There is no given stock limit medicine ')
+            return res.status(500).send({ success: false, message: 'There is no given stock limit medicine ' })
+
+        }
+        else {
+            return res.status(200).send({ success: true, message: 'Data fetched successfully', data: getLowestStockMedicine })
         }
     } catch (err) {
         console.log('Error fetching data:', err.message)
-        res.status(500).send({ error: 'Failed to fetch data' })
+        return res.status(500).send({ success: false, message:'Failed to fetch data' })
+
     }
 }
-
 const selectedMonthExpiringMedicines = async (req, res) => {
     try {
         const { month, year } = req.query
@@ -44,7 +48,7 @@ const selectedMonthExpiringMedicines = async (req, res) => {
         res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthExpiringMedicines })
     } catch (err) {
         console.log('Error fetching data:', err.message)
-        res.status(500).send({ error: 'Failed to fetch data' })
+        return res.status(500).send({ success: false, message:'Failed to fetch data' })
     }
 }
 
@@ -56,7 +60,7 @@ const addMedicineToPharmacy = async function (req, res) {
 
         if (name == null || stock == null || price == null || production_date == null || dosage == null || expiry_date == null || manufacturer == null) {
             console.error('Some fields are empty or invalid value')
-            return res.status(409).send({ error: 'Some fields are empty or invalid value' })
+            return res.status(409).send({ success: false, message:'Some fields are empty or invalid value'})
         }
         else {
             await userModel.addMedicine(name, stock, price, production_date, dosage, expiry_date, manufacturer)
@@ -64,12 +68,13 @@ const addMedicineToPharmacy = async function (req, res) {
         }
     } catch (err) {
         console.error('Error inserting data:', err.message)
-        return res.status(500).send({ error: 'Failed to insert data' })
+        return res.status(500).send({ success: false, message:'Failed to insert data'})
+
     }
 }
-  
 
-module.exports={
+
+module.exports = {
     getPatientsMedicinesList,
     getLowStockMedicinesList,
     selectedMonthExpiringMedicines,

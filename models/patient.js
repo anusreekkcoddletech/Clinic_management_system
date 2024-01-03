@@ -3,6 +3,9 @@ const { makeDb } = require('../databaseConnect')
 async function getSelectedMonthPatients(month, year) {
     const db = makeDb()
     try {
+        // if (!db.isConnected()) {
+        //     console.log('Databse connection error! ', err.message)
+        // }
         if (!month || !year) {
 
             const qr = `SELECT * FROM patients WHERE MONTH(created) = MONTH(CURRENT_DATE()) 
@@ -61,24 +64,11 @@ async function getSelectedPatientsAppointments(month, year) {
     }
 }
 
-async function bookAppointmentsList( patients_id, employees_id,date,time) {
-    const db = makeDb()
-    try {
-        const qr = 'insert into appointments ( patients_id, employees_id,date,time) values (?, ?, ?, ?)'
-        const values = [ patients_id, employees_id,date,time]
-        await db.query(qr, values)
-    } catch (err) {
-        console.error('Error:', err.message)
-    }
-    finally {
-        await db.close()
-    }
-}
 
 async function checkAppointmentBooked(time,date) {
     const db = makeDb()
     try {
-        const qr = 'select * from appointments where time =? AND date=?'
+        const qr = 'select id from appointments where time =? AND date=?'
         const values = [time,date]
         const appointmentBooked = await db.query(qr, values)
         return appointmentBooked
@@ -89,13 +79,14 @@ async function checkAppointmentBooked(time,date) {
     }
 }
 
+
 async function checkNumberOfAppointments(date,employees_id) {
     const db = makeDb()
     try {
-        const qr = 'select id from appointments where date =? AND employees_id=?'
+        const qr = 'select count(id) as count from appointments where date =? AND employees_id=?'
         const values = [date,employees_id]
-        const appointmentBooked = await db.query(qr, values)
-        return appointmentBooked
+        const appointmentCount = await db.query(qr, values)
+        return appointmentCount[0].count
     } catch (err) {
         console.error('Error:', err.message)
     } finally {
@@ -105,6 +96,45 @@ async function checkNumberOfAppointments(date,employees_id) {
 
 
 
+async function getAppointmentLimit(date, employees_id) {
+    const db = makeDb()
+
+    try {
+        const qr = 'SELECT appointment_limit FROM appointment_limits WHERE date = ? AND employees_id = ?'
+        const values = [date, employees_id]
+        const result = await db.query(qr, values)
+
+        if (result.length > 0) {
+            return result[0].appointment_limit
+        } else {
+            return null
+        }
+    } catch (err) {
+        console.error('Error getting appointment limit:', err.message)
+    } finally {
+        await db.close()
+    }
+}
+
+
+async function bookAppointmentsList( patients_id, employees_id,date,time) {
+    const db = makeDb()
+    try {
+        const qr = 'insert into appointments ( patients_id, employees_id,date,time) values (?, ?, ?, ?)'
+        const values = [ patients_id, employees_id,date,time]
+        await db.query(qr, values)
+        return true
+
+    } catch (err) {
+        console.error('Error:', err.message)
+        return false
+
+    }
+    finally {
+        await db.close()
+    }
+}
+
 module.exports = {
 
     getSelectedMonthPatients,
@@ -112,7 +142,10 @@ module.exports = {
     getPatientsAppointments,
     bookAppointmentsList,
     checkAppointmentBooked,
-    checkNumberOfAppointments
+    checkNumberOfAppointments,
+    getAppointmentLimit
+    
 }
+
 
 
