@@ -14,6 +14,7 @@ function makeDb() {
         } else {
             console.log('Connected to database')
         }
+        
     })
     return {
         query(qr, values) {

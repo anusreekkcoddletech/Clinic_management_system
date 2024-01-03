@@ -19,9 +19,12 @@ async function addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId) {
 async function checkEmployeesDepartment(department) {
     const db = makeDb()
     try {
+
         const qr = 'select name from departments where name=?'
         const result = await db.query(qr, department)
         return result.length > 0
+
+
     } catch (err) {
         console.error('Error checking department:', err.message)
     } finally {
@@ -29,21 +32,23 @@ async function checkEmployeesDepartment(department) {
     }
 }
 
-async function checkWorkscheduleAdded( timeFrom,timeTo, employeesId) {
+async function checkWorkscheduleAdded(timeFrom, timeTo, employeesId) {
     const db = makeDb()
     try {
         const qr = `select id from workschedules where time_from=? AND time_to=? AND employees_id=?`
 
-        const values = [timeFrom,timeTo, employeesId]
-        const checkWorkschedule = await db.query(qr,values)
+        const values = [timeFrom, timeTo, employeesId]
+        const checkWorkschedule = await db.query(qr, values)
         return checkWorkschedule.length > 0
 
     } catch (err) {
         console.log('Error fetching work details:', err.message)
+
     } finally {
         await db.close()
     }
 }
+
 
 
 module.exports = {
@@ -52,3 +57,16 @@ module.exports = {
     checkEmployeesDepartment,
     checkWorkscheduleAdded
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
