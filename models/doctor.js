@@ -1,11 +1,11 @@
 const { makeDb } = require('../databaseConnect')
 
 
-async function updatePatientsAppointmentStatus(status2, patientsId, date) {
+async function updatePatientsAppointmentStatus(status2, patientsId, date,time) {
     const db = makeDb()
     try {
-        const qr = `update appointments set status2=? where patients_id=? and date=?`
-        const values = [status2, patientsId, date]
+        const qr = `update appointments set status2=? where patients_id=? and date=? and time=?`
+        const values = [status2, patientsId, date,time]
         const updateAppointmentStatus = await db.query(qr, values)
         return updateAppointmentStatus
 
