@@ -94,12 +94,12 @@ async function checkNumberOfAppointments(date,employeesId) {
 
 
 
-async function getAppointmentLimit(date, employeesId) {
+async function getAppointmentLimit( employeesId) {
     const db = makeDb()
 
     try {
-        const qr = 'SELECT appointment_limit FROM appointment_limits WHERE date = ? AND employees_id = ?'
-        const values = [date, employeesId]
+        const qr = 'SELECT appointment_limit FROM appointment_limits WHERE employees_id = ?'
+        const values = [ employeesId]
         const result = await db.query(qr, values)
 
         if (result.length > 0) {

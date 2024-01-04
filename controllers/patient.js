@@ -57,7 +57,7 @@ const bookAppointmentsList = async function (req, res) {
             return res.status(409).send({ success: false, message: 'This time range already booked!' })
 
         }
-        const limitValue = await userModel.getAppointmentLimit(date, employeesId)
+        const limitValue = await userModel.getAppointmentLimit( employeesId)
         if (limitValue !== null) {
 
             const bookedAppointments = await userModel.checkNumberOfAppointments(date, employeesId)
