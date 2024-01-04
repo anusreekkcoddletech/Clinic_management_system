@@ -45,13 +45,13 @@ async function getSelectedPatientsAppointments(month, year) {
         if (!month || !year) {
 
             const qr = `SELECT * FROM appointments WHERE MONTH(date) = MONTH(CURRENT_DATE()) 
-            AND YEAR(date) = YEAR(CURRENT_DATE()) AND status="booked_appointment"`
+            AND YEAR(date) = YEAR(CURRENT_DATE()) AND status2=1`
 
             const currentMonthPatientsappointements = await db.query(qr)
             return currentMonthPatientsappointements
         }
         else {
-            const qr1 = `SELECT * FROM appointments WHERE MONTH(date) = ${month} AND  YEAR(date)  = ${year} AND status="booked_appointment"`
+            const qr1 = `SELECT * FROM appointments WHERE MONTH(date) = ${month} AND  YEAR(date)  = ${year} AND status2=1`
             const selectedMonthPatientsappointments = await db.query(qr1)
             return selectedMonthPatientsappointments
         }

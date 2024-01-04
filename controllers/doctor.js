@@ -3,15 +3,15 @@ const userModel = require('../models/doctor')
 const updatePatientsAppointmentsStatus = async function (req, res) {
     try {
         console.log('appointment status Request Body:', req.body)
-        const { status2, patientsId, date } = req.body
+        const { status2, patientsId, date ,time } = req.body
 
-        if (date === null || status2 === null || patientsId === null) {
+        if (date === null || status2 === null || patientsId === null || time === null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value'})
 
         }
         else {
-            return await userModel.updatePatientsAppointmentStatus(status2, patientsId, date)
+            await userModel.updatePatientsAppointmentStatus(status2, patientsId, date, time)
             res.status(200).send({ success: true, message: 'Updated status successfully', data: req.body })
         }
        
