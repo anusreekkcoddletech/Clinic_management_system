@@ -10,6 +10,7 @@ async function addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId) {
 
     } catch (err) {
         console.error('Error:', err.message)
+        return false
     }
     finally {
         await db.close()
@@ -22,11 +23,13 @@ async function checkEmployeesDepartment(department) {
 
         const qr = 'select name from departments where name=?'
         const result = await db.query(qr, department)
-        return result.length > 0
+        return result
 
 
     } catch (err) {
         console.error('Error checking department:', err.message)
+        return false
+
     } finally {
         await db.close()
     }
@@ -43,6 +46,8 @@ async function checkWorkscheduleAdded(timeFrom, timeTo, employeesId) {
 
     } catch (err) {
         console.log('Error fetching work details:', err.message)
+        return false
+
 
     } finally {
         await db.close()

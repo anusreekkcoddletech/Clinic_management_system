@@ -3,22 +3,23 @@ const { makeDb } = require('../databaseConnect')
 async function getSelectedMonthPatients(month, year) {
     const db = makeDb()
     try {
-    
+
         if (!month || !year) {
 
             const qr = `SELECT * FROM patients WHERE MONTH(created) = MONTH(CURRENT_DATE()) 
             AND YEAR(created) = YEAR(CURRENT_DATE())`
 
             const currentMonthPatients = await db.query(qr)
-            return currentMonthPatients
+                return currentMonthPatients
         }
         else {
-            const qr1 = `SELECT * FROM patients WHERE MONTH(created) = ${month} AND  YEAR(created)  = ${year}`
+            const qr1 = `SELECT * FROM patients WHERE MONTH(created) = ${month} AND  YEAR(created)  = ${year} `
             const selectedMonthPatients = await db.query(qr1)
             return selectedMonthPatients
         }
     } catch (err) {
-        console.log('Error fetching current month patients:', err.message)
+        console.log('Error fetching  patients:', err.message)
+        return false
     } finally {
         await db.close()
     }
@@ -28,12 +29,13 @@ async function getPatientsAppointments() {
     const db = makeDb()
     try {
         const qr = `SELECT a.id, a.date, a.status2, p.name AS patient_name, e.name AS doctor_name FROM appointments a
-                    INNER JOIN patients p ON a.patients_id = p.id INNER JOIN employees e ON a.employees_id = e.id`
+                    INNER JOIN patients p ON a.patients_id = p.id INNER JOIN employees e ON a.employees_id = e.id `
 
         const patientsappointments = await db.query(qr)
         return patientsappointments
     } catch (err) {
         console.log('Error fetching patients details:', err.message)
+        return false
     } finally {
         await db.close()
     }
@@ -63,30 +65,32 @@ async function getSelectedPatientsAppointments(month, year) {
 }
 
 
-async function checkAppointmentBooked(time,date) {
+async function checkAppointmentBooked(time, date) {
     const db = makeDb()
     try {
-        const qr = 'select id from appointments where time =? AND date=?'
-        const values = [time,date]
+        const qr = 'select id from appointments where time =? AND date=? '
+        const values = [time, date]
         const appointmentBooked = await db.query(qr, values)
         return appointmentBooked
     } catch (err) {
         console.error('Error:', err.message)
+        return false
     } finally {
         await db.close()
     }
 }
 
 
-async function checkNumberOfAppointments(date,employeesId) {
+async function checkNumberOfAppointments(date, employeesId) {
     const db = makeDb()
     try {
         const qr = 'select count(id) as count from appointments where date =? AND employees_id=?'
-        const values = [date,employeesId]
+        const values = [date, employeesId]
         const appointmentCount = await db.query(qr, values)
         return appointmentCount[0].count
     } catch (err) {
         console.error('Error:', err.message)
+        return false
     } finally {
         await db.close()
     }
@@ -94,12 +98,12 @@ async function checkNumberOfAppointments(date,employeesId) {
 
 
 
-async function getAppointmentLimit( employeesId) {
+async function getAppointmentLimit(employeesId) {
     const db = makeDb()
 
     try {
         const qr = 'SELECT appointment_limit FROM appointment_limits WHERE employees_id = ?'
-        const values = [ employeesId]
+        const values = [employeesId]
         const result = await db.query(qr, values)
 
         if (result.length > 0) {
@@ -109,17 +113,18 @@ async function getAppointmentLimit( employeesId) {
         }
     } catch (err) {
         console.error('Error getting appointment limit:', err.message)
+        return false
     } finally {
         await db.close()
     }
 }
 
 
-async function bookAppointmentsList( patientsId, employeesId,date,time) {
+async function bookAppointmentsList(patientsId, employeesId, date, time) {
     const db = makeDb()
     try {
         const qr = 'insert into appointments ( patients_id, employees_id,date,time) values (?, ?, ?, ?)'
-        const values = [ patientsId, employeesId,date,time]
+        const values = [patientsId, employeesId, date, time]
         await db.query(qr, values)
         return true
 
@@ -142,7 +147,7 @@ module.exports = {
     checkAppointmentBooked,
     checkNumberOfAppointments,
     getAppointmentLimit
-    
+
 }
 
 
