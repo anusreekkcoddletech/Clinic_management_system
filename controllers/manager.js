@@ -20,11 +20,15 @@ const addEmployeesWorkSchedule = async function (req, res) {
         const checkWorkAdded = await userModel.checkWorkscheduleAdded(timeFrom, timeTo, employeesId)
         if (checkWorkAdded) {
             console.error('Already assigned job');
-           return res.status(500).send({ success: false, message:  'Already assigned job'})
+            return res.status(500).send({ success: false, message: 'Already assigned job' })
+        }
 
+        const addWorkschedule = await userModel.addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId)
+
+        if (departmentCheck == false || checkWorkAdded == false || addWorkschedule == false) {
+            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
         }
         else {
-            await userModel.addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId)
             return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
         }
     } catch (err) {

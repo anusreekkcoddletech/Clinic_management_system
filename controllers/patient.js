@@ -56,41 +56,39 @@ const bookAppointmentsList = async function (req, res) {
         console.log('appointment Request Body:', req.body)
         const { patientsId, employeesId, date, time } = req.body
 
-        switch (true) {
-            case !patientsId || !employeesId || !date || !time:
-                console.error('Some fields are empty')
-                res.status(409).send({ success: false, message: 'All fields are required' })
-                break;
+        if (!patientsId || !employeesId || !date || !time) {
+            console.error('Some fields are empty')
+            return res.status(409).send({ success: false, message: 'All fields are required' })
 
-            case checkAppointmentBooked.length > 0:
-                const checkAppointmentBooked = await userModel.checkAppointmentBooked(time, date)
-                console.error('This time range already booked!')
-                res.status(409).send({ success: false, message: 'This time range already booked!' })
-                break;
+        }
+        const checkAppointmentBooked = await userModel.checkAppointmentBooked(time, date)
+        if (checkAppointmentBooked.length > 0) {
+            console.error('This time range already booked!')
+            return res.status(409).send({ success: false, message: 'This time range already booked!' })
 
-            case limitValue !== null:
-                const limitValue = await userModel.getAppointmentLimit(employeesId)
-                const bookedAppointments = await userModel.checkNumberOfAppointments(date, employeesId)
+        }
+        const limitValue = await userModel.getAppointmentLimit(employeesId)
+        if (limitValue !== null) {
 
-                switch (true) {
-                    case bookedAppointments >= limitValue:
+            const bookedAppointments = await userModel.checkNumberOfAppointments(date, employeesId)
 
-                        console.error('Maximum number of appointment booked for this date!')
-                        res.status(409).send({ success: false, message: 'Maximum number of appointment booked for this date!' })
-                        break;
+            if (bookedAppointments >= limitValue) {
 
-                    case checkAppointmentBooked == false || booked == false || limitValue == false:
-                        res.status(409).send({ success: false, message: 'syntax error' })
-                        break;
+                console.error('Maximum number of appointment booked for this date!')
+                return res.status(409).send({ success: false, message: 'Maximum number of appointment booked for this date!' })
+            }
+        }
 
-                    default:
-                        const booked = await userModel.bookAppointmentsList(patientsId, employeesId, date, time)
-                        res.status(200).send({ success: true, message: 'Requested successfully', data: req.body })
-                        break;
-                }
-                break;
-
-
+        const booked = await userModel.bookAppointmentsList(patientsId, employeesId, date, time)
+        if (checkAppointmentBooked == false || booked == false || limitValue == false) {
+            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        }
+        else {
+            if (booked) {
+                return res.status(200).send({ success: true, message: 'Requested successfully', data: req.body })
+            } else {
+                return res.status(409).send({ success: false, message: 'Booking failed' });
+            }
         }
 
     } catch (err) {
@@ -98,7 +96,7 @@ const bookAppointmentsList = async function (req, res) {
         return res.status(200).send({ success: false, message: 'Booking failed' })
     }
 }
-
+  
 module.exports = {
     getSelectedMonthPatientsappointments,
     getSelectedMonthPatients,
@@ -108,17 +106,4 @@ module.exports = {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
