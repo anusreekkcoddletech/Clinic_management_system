@@ -70,7 +70,6 @@ const addMedicineToPharmacy = async function (req, res) {
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value' })
         }
         const checkExistingMedicine = await userModel.checkExistingMedicine(code)
-        console.log(checkExistingMedicine)
         if (checkExistingMedicine.length > 0) {
             await userModel.updateMedicineStock(stock,price,code,)          
             return res.status(500).send({ success: false, message: 'Updated stock quantity' })
@@ -84,7 +83,6 @@ const addMedicineToPharmacy = async function (req, res) {
     } catch (err) {
         console.error('Error inserting data:', err.message)
         return res.status(500).send({ success: false, message: 'Failed to insert data' })
-
     }
 }
 

@@ -10,7 +10,7 @@ const register = async function (req, res) {
       console.error('Some fields are empty')
       res.status(409).send({ success: false, message: 'All fields are required' })
 
-      return  
+      return
     }
     const checkExistingUser = await userModel.checkRegisteredUser(username)
     if (checkExistingUser.length > 0) {
@@ -32,30 +32,55 @@ const register = async function (req, res) {
   }
 }
 
+const employeeRegister = async function (req, res) {
+  try {
+    console.log('Registration Request Body:', req.body)
+    const { name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password } = req.body
+    if (!name || !qualification || !experience || !gender || !phone || !hiring_date || !employee_types_id || !department_id ||!username ||!password) {
+      console.error('Some fields are empty')
+      res.status(409).send({ success: false, message: 'All fields are required' })
+
+      return
+    }
+    const checkExistingEmployee = await userModel.checkRegisteredEmployee(username)
+    if (checkExistingEmployee.length > 0) {
+      console.error('Employee is already registered')
+      res.status(409).send({ success: false, message: 'Employee is already registered' })
+
+    } else {
+       await userModel.registerEmployee(name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password)
+        res.status(200).send({ success: true, message: 'registration completed' })
+      }
+  } catch (err) {
+    console.error('Error executing registration query:', err.message)
+    res.status(409).send({ success: false, message: 'registration failed' })
+  }
+}
+
 const login = async function (req, res) {
   try {
     console.log('Login Request Body:', req.body)
-    const { username, password } = req.body
-    if (!username || !password) {
+    const { username, password, employeeTypes } = req.body
+    if (!username || !password || !employeeTypes) {
       console.error('Some fields are empty')
       return res.status(409).send({ success: false, message: 'Some fields are empty' })
     }
-    const result = await userModel.loginUser(username, password)
+    const result = await userModel.loginUser(username, password, employeeTypes)
     if (result.length > 0) {
       const resp = {
-        id: result[0].id,
-        display_name: result[0].display_name
+        username: result[0].username,
+        password: result[0].password,
+        employeeTypes: result[0].employee_type
       }
       if (result == false) {
         return res.status(409).send({ success: false, message: 'error: Syntax error' })
 
       } else {
         const token = jwt.sign(resp, "secret", { expiresIn: 86400 })
-        res.status(200).send({ auth: true, token: token })
+        res.status(200).send({ auth: true, token: token,employeeTypes })
       }
     } else {
       return res.status(409).send({ success: false, message: 'invalid credentials' })
-
     }
   } catch (err) {
     console.error('Error executing query:', err.message)
@@ -68,6 +93,7 @@ const login = async function (req, res) {
 module.exports = {
   register,
   login,
+  employeeRegister
 
 }
 
