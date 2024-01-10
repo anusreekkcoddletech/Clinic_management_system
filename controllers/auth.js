@@ -20,7 +20,7 @@ const register = async function (req, res) {
     } else {
       const registerUser = await userModel.registerUser(name, username, password, age, gender, phone, bloodGroup, employeesId)
       if (checkExistingUser == false || registerUser == false) {
-        return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        return res.status(409).send({ success: false, message: 'error: Syntax error' })
 
       } else {
         res.status(200).send({ success: true, message: 'registration completed' })
@@ -47,7 +47,7 @@ const login = async function (req, res) {
         display_name: result[0].display_name
       }
       if (result == false) {
-        return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        return res.status(409).send({ success: false, message: 'error: Syntax error' })
 
       } else {
         const token = jwt.sign(resp, "secret", { expiresIn: 86400 })

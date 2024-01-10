@@ -12,9 +12,11 @@ const updatePatientsAppointmentsStatus = async function (req, res) {
         }
         const updateAppointmentStatus = await userModel.updatePatientsAppointmentStatus(status2, patientsId, date, time)
         if (updateAppointmentStatus == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+            console.log("Syntax error")
+            return res.status(409).send({ success: false, message: 'Syntax error' })
         }
         else {
+            console.log("Updated status successfully")
             res.status(200).send({ success: true, message: 'Updated status successfully', data: req.body })
         }
 
@@ -42,7 +44,7 @@ const addPrescriptionDetails = async function (req, res) {
         }
         const addPrescription = await userModel.addPatientsPrescription(appointmentId, Diagnosys, medicineId, PrescribedQuantity)
         if (medicineValidCheck == false || addPrescription == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+            return res.status(409).send({ success: false, message: 'error: Syntax error' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
@@ -71,7 +73,6 @@ const getMedicinesList = async (req, res) => {
 
 const addAppointmentLimit = async (req, res) => {
     try {
-
         console.log('Appointment Limit Adding Request Body:', req.body)
         const { employeesId, limit } = req.body
 
@@ -79,14 +80,14 @@ const addAppointmentLimit = async (req, res) => {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value' })
         }
-        const existingDoctor = await userModel.checkAppointmentLimitAdded(employeesId)
-        if (!existingDoctor) {
+        const checkLimitAdded = await userModel.checkAppointmentLimitAdded(employeesId)
+        if (checkLimitAdded.length === 0) {
             await userModel.setAppointmentLimit(employeesId, limit)
             return res.status(200).send({ success: true, message: 'Data inserted successfully', data: req.body })
         }
         const updateAppointmentLimit = await userModel.updateAppointmentLimit(employeesId, limit)
-        if (existingDoctor == false || updateAppointmentLimit == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        if (checkLimitAdded === false || updateAppointmentLimit === false) {
+            return res.status(409).send({ success: false, message: 'error: Syntax error' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Data updated successfully', data: req.body })
@@ -94,10 +95,8 @@ const addAppointmentLimit = async (req, res) => {
     } catch (err) {
         console.log('Error insert data:', err.message)
         res.status(500).send({ success: false, message: 'Failed to insert data' })
-
     }
 }
-
 
 module.exports = {
     updatePatientsAppointmentsStatus,
@@ -105,3 +104,7 @@ module.exports = {
     getMedicinesList,
     addAppointmentLimit
 }
+
+
+
+

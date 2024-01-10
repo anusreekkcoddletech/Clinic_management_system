@@ -68,7 +68,7 @@ async function getSelectedPatientsAppointments(month, year) {
 async function checkAppointmentBooked(time, date) {
     const db = makeDb()
     try {
-        const qr = 'select id from appointments where time =? AND date=? '
+        const qr = 'select id from appointments where time =? AND date=?'
         const values = [time, date]
         const appointmentBooked = await db.query(qr, values)
         return appointmentBooked
@@ -123,10 +123,10 @@ async function getAppointmentLimit(employeesId) {
 async function bookAppointmentsList(patientsId, employeesId, date, time) {
     const db = makeDb()
     try {
-        const qr = 'insert into appointments ( patients_id, employees_id,date,time) values (?, ?, ?, ?)'
+        const qr = 'insert into appointments ( patients_id, employees_id,date,time) values (?, ?, ?, ?) '
         const values = [patientsId, employeesId, date, time]
-        await db.query(qr, values)
-        return true
+        const c = await db.query(qr, values)
+        return c
 
     } catch (err) {
         console.error('Error:', err.message)
@@ -138,6 +138,9 @@ async function bookAppointmentsList(patientsId, employeesId, date, time) {
     }
 }
 
+
+
+
 module.exports = {
 
     getSelectedMonthPatients,
@@ -146,8 +149,8 @@ module.exports = {
     bookAppointmentsList,
     checkAppointmentBooked,
     checkNumberOfAppointments,
-    getAppointmentLimit
-
+    getAppointmentLimit,
+    // isPatient
 }
 
 

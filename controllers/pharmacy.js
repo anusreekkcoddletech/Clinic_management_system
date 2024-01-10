@@ -4,7 +4,7 @@ const getPatientsMedicinesList = async (req, res) => {
     try {
         const patientsPurchasedMedicines = await userModel.getPatientsMedicinesDetails()
         if (patientsPurchasedMedicines == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+            return res.status(409).send({ success: false, message: 'error: Syntax error' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientsPurchasedMedicines })
@@ -32,7 +32,7 @@ const getLowStockMedicinesList = async (req, res) => {
 
         }
         if (getLowestStockMedicine == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+            return res.status(409).send({ success: false, message: 'error: Syntax error' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Data fetched successfully', data: getLowestStockMedicine })
@@ -43,12 +43,13 @@ const getLowStockMedicinesList = async (req, res) => {
 
     }
 }
+
 const selectedMonthExpiringMedicines = async (req, res) => {
     try {
         const { month, year } = req.query
         const selectedMonthExpiringMedicines = await userModel.getSelectedMonthExpiringMedicines(month, year)
         if (selectedMonthExpiringMedicines == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+            return res.status(409).send({ success: false, message: 'error: Syntax error' })
         } else {
             res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthExpiringMedicines })
         }
@@ -62,15 +63,21 @@ const addMedicineToPharmacy = async function (req, res) {
 
     try {
         console.log('Medicine adding Request Body:', req.body)
-        const { name, stock, price, productionDate, dosage, expiryDate, manufacturer } = req.body
+        const { name, stock, price, productionDate, dosage, expiryDate, manufacturer, code } = req.body
 
-        if (name == null || stock == null || price == null || productionDate == null || dosage == null || expiryDate == null || manufacturer == null) {
+        if (name == null || stock == null || price == null || productionDate == null || dosage == null || expiryDate == null || manufacturer == null || code == null) {
             console.error('Some fields are empty or invalid value')
             return res.status(409).send({ success: false, message: 'Some fields are empty or invalid value' })
         }
-        const addMedicine = await userModel.addMedicine(name, stock, price, productionDate, dosage, expiryDate, manufacturer)
-        if (addMedicine == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        const checkExistingMedicine = await userModel.checkExistingMedicine(code)
+        console.log(checkExistingMedicine)
+        if (checkExistingMedicine.length > 0) {
+            await userModel.updateMedicineStock(stock,price,code,)          
+            return res.status(500).send({ success: false, message: 'Updated stock quantity' })
+        }
+        const addMedicine = await userModel.addMedicine(name, stock, price, productionDate, dosage, expiryDate, manufacturer, code)
+        if (checkExistingMedicine === false || updateStock === false||addMedicine == false) {
+            return res.status(409).send({ success: false, message: 'error: Syntax error' })
         } else {
             return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
         }
@@ -80,7 +87,6 @@ const addMedicineToPharmacy = async function (req, res) {
 
     }
 }
-
 
 module.exports = {
     getPatientsMedicinesList,

@@ -22,9 +22,9 @@ async function getLowestStockMedicine(stock) {
     try {
         const qr = `select name,stock from pharmacy where stock<=? `
 
-        const lowStockMedicines = await db.query(qr,stock)
+        const lowStockMedicines = await db.query(qr, stock)
         return lowStockMedicines
-        
+
     } catch (err) {
         console.log('Error fetching medicine details:', err.message)
         return false
@@ -38,14 +38,14 @@ async function getSelectedMonthExpiringMedicines(month, year) {
     try {
         if (!month || !year) {
 
-            const qr = `SELECT id,name,stock,price,production_date,expiry_date , manufacturer FROM pharmacy WHERE MONTH(expiry_date) = MONTH(CURRENT_DATE()) 
+            const qr = `SELECT id,name,stock,price,production_date,expiry_date , manufacturer,code FROM pharmacy WHERE MONTH(expiry_date) = MONTH(CURRENT_DATE()) 
             AND YEAR(expiry_date) = YEAR(CURRENT_DATE()) `
 
             const currentMonthExpiringMedicines = await db.query(qr)
             return currentMonthExpiringMedicines
         }
         else {
-            const qr1 = `SELECT id,name,stock,price,production_date,expiry_date , manufacturer FROM pharmacy WHERE MONTH(expiry_date) = ${month} AND  YEAR(expiry_date)  = ${year} `
+            const qr1 = `SELECT id,name,stock,price,production_date,expiry_date , manufacturer,code FROM pharmacy WHERE MONTH(expiry_date) = ${month} AND  YEAR(expiry_date)  = ${year} `
             const selectedMonthExpiringMedicines = await db.query(qr1)
             return selectedMonthExpiringMedicines
         }
@@ -57,11 +57,11 @@ async function getSelectedMonthExpiringMedicines(month, year) {
     }
 }
 
-async function addMedicine(name, stock, price, productionDate, dosage, expiryDate, manufacturer) {
+async function addMedicine(name, stock, price, productionDate, dosage, expiryDate, manufacturer, code) {
     const db = makeDb()
     try {
-        const qr = 'insert into pharmacy (name, stock, price, production_date,dosage,expiry_date,manufacturer) values (?,?,?,?,?,?,?) '
-        const values = [name, stock, price, productionDate, dosage, expiryDate, manufacturer]
+        const qr = 'insert into pharmacy (name, stock, price, production_date,dosage,expiry_date,manufacturer,code) values (?,?,?,?,?,?,?,?) '
+        const values = [name, stock, price, productionDate, dosage, expiryDate, manufacturer, code]
         await db.query(qr, values)
 
     } catch (err) {
@@ -73,9 +73,41 @@ async function addMedicine(name, stock, price, productionDate, dosage, expiryDat
     }
 }
 
-module.exports={
+async function checkExistingMedicine(code) {
+    const db = makeDb()
+    try {
+        const qr1 = `SELECT id FROM pharmacy WHERE code = ?`
+        const values = [code]
+        const checkExistingMedicine = await db.query(qr1, values)
+        return checkExistingMedicine
+    } catch (err) {
+        console.log('Error fetching data of medicines:', err.message)
+        return false
+    } finally {
+        await db.close()
+    }
+}
+
+async function updateMedicineStock(stock,price,code) {
+    const db = makeDb()
+    try {
+        const qr = 'UPDATE pharmacy SET stock=stock+?,price=price+? where code = ? '
+        const values = [stock,price, code]
+        const result = await db.query(qr, values)
+        return result
+    } catch (err) {
+        console.error('Error updating stock :', err.message)
+        return false
+    } finally {
+        await db.close()
+    }
+}
+
+module.exports = {
     getPatientsMedicinesDetails,
     getLowestStockMedicine,
     getSelectedMonthExpiringMedicines,
-    addMedicine
+    addMedicine,
+    checkExistingMedicine,
+    updateMedicineStock
 }

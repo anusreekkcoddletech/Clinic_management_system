@@ -60,7 +60,6 @@ async function searchMedicines(search) {
     try {
         const qr = `select id, name, price from pharmacy where name like ? `
         const values = [`%${search}%`]
-        console.log(qr)
         const getMedicines = await db.query(qr, values)
         return getMedicines
 
@@ -71,6 +70,7 @@ async function searchMedicines(search) {
         await db.close()
     }
 }
+
 
 async function setAppointmentLimit(employeesId, limit) {
     const db = makeDb()
@@ -107,7 +107,7 @@ async function checkAppointmentLimitAdded(employeesId) {
 async function updateAppointmentLimit(employeesId, limit) {
     const db = makeDb()
     try {
-        const qr = 'UPDATE appointment_limits SET appointment_limit=? where employees_id=? '
+        const qr = 'UPDATE appointment_limits SET appointment_limit=? where employees_id=?'
         const values = [limit, employeesId]
         const result = await db.query(qr, values)
         return result
@@ -118,6 +118,7 @@ async function updateAppointmentLimit(employeesId, limit) {
         await db.close()
     }
 }
+
 
 
 module.exports = {
