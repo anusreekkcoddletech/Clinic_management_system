@@ -12,12 +12,10 @@ const addEmployeesWorkSchedule = async function (req, res) {
         }
 
         const departmentCheck = await userModel.checkEmployeesDepartment(department)
-        console.log(departmentCheck)
-        if (departmentCheck.length < 1) {
+        if (departmentCheck.length < 1 ||departmentCheck=== false) {
             console.error('Invalid department provided')
             return res.status(500).send({ success: false, message: 'Invalid department provided' })
         }
-
         const checkWorkAdded = await userModel.checkWorkscheduleAdded(date, timeFrom, timeTo, employeesId)
         if (checkWorkAdded.length > 0) {
             console.error('Already assigned job')
@@ -26,7 +24,7 @@ const addEmployeesWorkSchedule = async function (req, res) {
 
         const addWorkschedule = await userModel.addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId)
       
-        if (departmentCheck=== false || checkWorkAdded=== false|| addWorkschedule === false) {
+        if (checkWorkAdded=== false|| addWorkschedule === false) {
             return res.status(409).send({ success: false, message: 'error: Syntax error' })
         } 
         else {
