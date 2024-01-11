@@ -5,21 +5,21 @@ const jwt = require('jsonwebtoken')
 const register = async function (req, res) {
   try {
     console.log('Registration Request Body:', req.body)
-    const { name, username, password, age, gender, phone, bloodGroup, employeesId } = req.body
-    if (!name || !username || !password || !age || !gender || !phone || !bloodGroup || !employeesId) {
+    const { name, username, password, age, gender, phone, bloodGroup,user_type } = req.body
+    if (!name || !username || !password || !age || !gender || !phone || !bloodGroup || !user_type) {
       console.error('Some fields are empty')
       res.status(409).send({ success: false, message: 'All fields are required' })
 
       return
     }
     const checkExistingUser = await userModel.checkRegisteredUser(username)
-    if (checkExistingUser.length > 0) {
+    if (checkExistingUser.length > 0 ||!checkExistingUser) {
       console.error('User is already registered')
       res.status(409).send({ success: false, message: 'User is already registered' })
 
     } else {
-      const registerUser = await userModel.registerUser(name, username, password, age, gender, phone, bloodGroup, employeesId)
-      if (checkExistingUser == false || registerUser == false) {
+      const registerUser = await userModel.registerUser(name, username, password, age, gender, phone, bloodGroup, user_type)
+      if ( registerUser) {
         return res.status(409).send({ success: false, message: 'error: Syntax error' })
 
       } else {
@@ -35,22 +35,26 @@ const register = async function (req, res) {
 const employeeRegister = async function (req, res) {
   try {
     console.log('Registration Request Body:', req.body)
-    const { name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password } = req.body
-    if (!name || !qualification || !experience || !gender || !phone || !hiring_date || !employee_types_id || !department_id ||!username ||!password) {
+    const { name, qualification, experience, gender, phone, hiring_date, employee_types_id, department_id, username, password } = req.body
+    if (!name || !qualification || !experience || !gender || !phone || !hiring_date || !employee_types_id || !department_id || !username || !password) {
       console.error('Some fields are empty')
       res.status(409).send({ success: false, message: 'All fields are required' })
-
       return
     }
     const checkExistingEmployee = await userModel.checkRegisteredEmployee(username)
-    if (checkExistingEmployee.length > 0) {
+    if (checkExistingEmployee.length > 0|| !checkExistingEmployee) {
       console.error('Employee is already registered')
       res.status(409).send({ success: false, message: 'Employee is already registered' })
-
+    }
+    else {
+      const regEmployee = await userModel.registerEmployee(name, qualification, experience, gender, phone, hiring_date, employee_types_id, department_id, username, password)
+      if (regEmployee) {
+      res.status(200).send({ success: true, message: 'registration completed' })
     } else {
-       await userModel.registerEmployee(name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password)
-        res.status(200).send({ success: true, message: 'registration completed' })
-      }
+      console.error('Registration error');
+      res.status(409).send({ success: false, message: 'registration failed' });
+    }
+    }
   } catch (err) {
     console.error('Error executing registration query:', err.message)
     res.status(409).send({ success: false, message: 'registration failed' })
@@ -77,7 +81,7 @@ const login = async function (req, res) {
 
       } else {
         const token = jwt.sign(resp, "secret", { expiresIn: 86400 })
-        res.status(200).send({ auth: true, token: token,employeeTypes })
+        res.status(200).send({ auth: true, token: token, employeeTypes })
       }
     } else {
       return res.status(409).send({ success: false, message: 'invalid credentials' })
