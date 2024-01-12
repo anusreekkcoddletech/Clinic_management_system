@@ -6,7 +6,7 @@ const getSelectedMonthPatients = async (req, res) => {
         const { month, year } = req.query
         const selectedMonthPatients = await userModel.getSelectedMonthPatients(month, year)
 
-        if (selectedMonthPatients == false) {
+        if (!selectedMonthPatients) {
             return res.status(409).send({ success: false, message: 'error: Syntax error' })
 
         } else {
@@ -96,7 +96,6 @@ const bookAppointmentsList = async function (req, res) {
 module.exports = {
     getSelectedMonthPatientsappointments,
     getSelectedMonthPatients,
-    getSelectedMonthPatientsappointments,
     bookAppointmentsList,
     getPatientsAppointmentsList,
 }
