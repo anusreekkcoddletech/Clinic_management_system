@@ -5,7 +5,10 @@ const jwt = require('jsonwebtoken')
 const register = async function (req, res) {
   try {
     console.log('Registration Request Body:', req.body)
+    
     const { name, username, password, age, gender, phone, bloodGroup,user_type } = req.body
+    const userInfo = { name, username, password, age, gender, phone, bloodGroup, user_type }
+
     if (!name || !username || !password || !age || !gender || !phone || !bloodGroup || !user_type) {
       console.error('Some fields are empty')
       res.status(409).send({ success: false, message: 'All fields are required' })
@@ -18,9 +21,9 @@ const register = async function (req, res) {
       res.status(409).send({ success: false, message: 'User is already registered' })
 
     } else {
-      const registerUser = await userModel.registerUser(name, username, password, age, gender, phone, bloodGroup, user_type)
+      const registerUser = await userModel.registerUser(userInfo)
       if ( registerUser) {
-        return res.status(409).send({ success: false, message: 'error: Syntax error' })
+        return res.status(409).send({ success: false, message: 'registration failed ' })
 
       } else {
         res.status(200).send({ success: true, message: 'registration completed' })
@@ -36,6 +39,8 @@ const employeeRegister = async function (req, res) {
   try {
     console.log('Registration Request Body:', req.body)
     const { name, qualification, experience, gender, phone, hiring_date, employee_types_id, department_id, username, password } = req.body
+    const employeeInfo = { name, qualification, experience, gender, phone, hiring_date, employee_types_id, department_id, username, password}
+
     if (!name || !qualification || !experience || !gender || !phone || !hiring_date || !employee_types_id || !department_id || !username || !password) {
       console.error('Some fields are empty')
       res.status(409).send({ success: false, message: 'All fields are required' })
@@ -47,7 +52,7 @@ const employeeRegister = async function (req, res) {
       res.status(409).send({ success: false, message: 'Employee is already registered' })
     }
     else {
-      const regEmployee = await userModel.registerEmployee(name, qualification, experience, gender, phone, hiring_date, employee_types_id, department_id, username, password)
+      const regEmployee = await userModel.registerEmployee(employeeInfo)
       if (regEmployee) {
       res.status(200).send({ success: true, message: 'registration completed' })
     } else {
@@ -76,8 +81,8 @@ const login = async function (req, res) {
         password: result[0].password,
         employeeTypes: result[0].employee_type
       }
-      if (result == false) {
-        return res.status(409).send({ success: false, message: 'error: Syntax error' })
+      if (result === false) {
+        return res.status(409).send({ success: false, message: 'Login error' })
 
       } else {
         const token = jwt.sign(resp, "secret", { expiresIn: 86400 })

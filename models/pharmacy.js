@@ -57,9 +57,10 @@ async function getSelectedMonthExpiringMedicines(month, year) {
     }
 }
 
-async function addMedicine(name, stock, price, productionDate, dosage, expiryDate, manufacturer, code) {
+async function addMedicine(medicineInfo) {
     const db = makeDb()
     try {
+        const { name, stock, price, productionDate, dosage, expiryDate, manufacturer, code } = medicineInfo
         const qr = 'insert into pharmacy (name, stock, price, production_date,dosage,expiry_date,manufacturer,code) values (?,?,?,?,?,?,?,?) '
         const values = [name, stock, price, productionDate, dosage, expiryDate, manufacturer, code]
         await db.query(qr, values)

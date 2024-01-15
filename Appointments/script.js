@@ -23,14 +23,14 @@ function getAppointmentsData() {
 }
 function appointmentsTable(appointments) {
     let html = '<table>'
-    for (let i = 0; i < appointments.length; i++) {
-        html += '<tr>',
-            html += '<td>' + appointments[i].id + '</td>'
+    for (let i of appointments) {
+        html += '<tr>'
+            html += '<td>' +i.id + '</td>'
 
-        html += '<td>' + appointments[i].date + '</td>'
-        html += '<td>' + appointments[i].status2 + '</td>'
-        html += '<td>' + appointments[i].patient_name+ '</td>'
-        html += '<td>' + appointments[i].doctor_name + '</td>'
+        html += '<td>' + i.date + '</td>'
+        html += '<td>' + i.status2 + '</td>'
+        html += '<td>' + i.patient_name + '</td>'
+        html += '<td>' + i.doctor_name + '</td>'
         html += '</tr>'
     }
     html += '</table>'

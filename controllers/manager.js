@@ -25,7 +25,7 @@ const addEmployeesWorkSchedule = async function (req, res) {
         const addWorkschedule = await userModel.addEmployeesWorkschedule(date, timeFrom, timeTo, employeesId)
       
         if (checkWorkAdded=== false|| addWorkschedule === false) {
-            return res.status(409).send({ success: false, message: 'error: Syntax error' })
+            return res.status(409).send({ success: false, message: 'Failed to insert data' })
         } 
         else {
             return res.status(200).send({ success: true, message: 'Added data successfully'})

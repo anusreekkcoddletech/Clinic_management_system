@@ -1,9 +1,9 @@
 
 const { makeDb } = require('../databaseConnect')
-
-async function registerUser(name, username, password, age, gender, phone, bloodGroup,user_type) {
+async function registerUser(userInfo) {
   const db = makeDb()
   try {
+    const { name, username, password, age, gender, phone, bloodGroup, user_type } = userInfo
     const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup,user_type) values (?, ?, ?, ?, ?, ?, ?,?)'
     const values = [name, username, password, age, gender, phone, bloodGroup,user_type]
     await db.query(qr, values)
@@ -16,9 +16,10 @@ async function registerUser(name, username, password, age, gender, phone, bloodG
   }
 }
 
-async function registerEmployee(name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password) {
+async function registerEmployee(employeeInfo) {
   const db = makeDb()
   try {
+   const{ name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password}=employeeInfo
     const qr = 'insert into employees (name, qualification, experience, gender, phone, hiring_date,employee_types_id,departments_id,username,password) values (?, ?, ?, ?, ?, ?, ?,?,?,?)'
     const values = [name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password]
     await db.query(qr, values)

@@ -41,10 +41,10 @@ async function addPatientsPrescription(appointmentId, diagnosys, medicineId, Pre
 async function checkMedicineValidity(medicineId) {
     const db = makeDb()
     try {
-        for ( let i = 0; i < medicineId.length; i++) {
+        for (let i of medicineId) {
             const qr = 'SELECT id FROM pharmacy WHERE id = ?'
 
-            const result = await db.query(qr, medicineId[i])
+            const result = await db.query(qr, i)
             return result.length >= 1
         }
     } catch (err) {
