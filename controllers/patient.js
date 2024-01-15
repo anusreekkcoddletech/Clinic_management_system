@@ -6,8 +6,8 @@ const getSelectedMonthPatients = async (req, res) => {
         const { month, year } = req.query
         const selectedMonthPatients = await userModel.getSelectedMonthPatients(month, year)
 
-        if (selectedMonthPatients == false) {
-            return res.status(409).send({ success: false, message: 'error: Syntax error' })
+        if (!selectedMonthPatients) {
+            return res.status(409).send({ success: false, message: 'Error fetching data' })
 
         } else {
             return res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatients })
@@ -23,8 +23,8 @@ const getSelectedMonthPatientsappointments = async (req, res) => {
     try {
         const { month, year } = req.query
         const selectedMonthPatientsappointments = await userModel.getSelectedPatientsAppointments(month, year)
-        if (selectedMonthPatientsappointments == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        if (!selectedMonthPatientsappointments) {
+            return res.status(409).send({ success: false, message: 'Error fetching data' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Data fetched successfully', data: selectedMonthPatientsappointments })
@@ -38,8 +38,8 @@ const getSelectedMonthPatientsappointments = async (req, res) => {
 const getPatientsAppointmentsList = async (req, res) => {
     try {
         const patientsappointmentbyDate = await userModel.getPatientsAppointments()
-        if (patientsappointmentbyDate == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        if (!patientsappointmentbyDate) {
+            return res.status(409).send({ success: false, message: 'Error fetching data' })
 
         } else {
             return res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientsappointmentbyDate })
@@ -80,7 +80,7 @@ const bookAppointmentsList = async function (req, res) {
         } 
         const booked = await userModel.bookAppointmentsList(patientsId, employeesId, date, time)
         if (booked===false) {
-            return res.status(409).send({ success: false, message: 'error: Syntax error' })
+            return res.status(409).send({ success: false, message: 'Error executing appointment query:' })
         } else {
 
             return res.status(200).send({ success: true, message: 'Requested successfully', data: req.body })
@@ -96,7 +96,6 @@ const bookAppointmentsList = async function (req, res) {
 module.exports = {
     getSelectedMonthPatientsappointments,
     getSelectedMonthPatients,
-    getSelectedMonthPatientsappointments,
     bookAppointmentsList,
     getPatientsAppointmentsList,
 }

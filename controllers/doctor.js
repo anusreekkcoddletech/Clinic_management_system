@@ -11,9 +11,9 @@ const updatePatientsAppointmentsStatus = async function (req, res) {
 
         }
         const updateAppointmentStatus = await userModel.updatePatientsAppointmentStatus(status2, patientsId, date, time)
-        if (updateAppointmentStatus == false) {
-            console.log("Syntax error")
-            return res.status(409).send({ success: false, message: 'Syntax error' })
+        if (!updateAppointmentStatus) {
+            console.log("Failed to update data")
+            return res.status(409).send({ success: false, message: 'Failed to update data' })
         }
         else {
             console.log("Updated status successfully")
@@ -43,8 +43,8 @@ const addPrescriptionDetails = async function (req, res) {
 
         }
         const addPrescription = await userModel.addPatientsPrescription(appointmentId, Diagnosys, medicineId, PrescribedQuantity)
-        if (medicineValidCheck == false || addPrescription == false) {
-            return res.status(409).send({ success: false, message: 'error: Syntax error' })
+        if ( !addPrescription ) {
+            return res.status(409).send({ success: false, message: 'Failed to add data' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Added data successfully', data: req.body })
@@ -59,8 +59,8 @@ const getMedicinesList = async (req, res) => {
     try {
         const { search } = req.query
         const medicineList = await userModel.searchMedicines(search)
-        if (medicineList == false) {
-            return res.status(409).send({ success: false, message: 'Database connection error: SQL syntax error' })
+        if (!medicineList) {
+            return res.status(409).send({ success: false, message: 'Failed to fetch data' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Data fetched successfully', data: medicineList })
@@ -87,7 +87,7 @@ const addAppointmentLimit = async (req, res) => {
         }
         const updateAppointmentLimit = await userModel.updateAppointmentLimit(employeesId, limit)
         if (checkLimitAdded === false || updateAppointmentLimit === false) {
-            return res.status(409).send({ success: false, message: 'error: Syntax error' })
+            return res.status(409).send({ success: false, message: 'Failed to fetch data' })
         }
         else {
             return res.status(200).send({ success: true, message: 'Data updated successfully', data: req.body })

@@ -23,7 +23,7 @@ async function addPatientsPrescription(appointmentId, diagnosys, medicineId, Pre
         const values = [appointmentId, diagnosys, PrescribedQuantity]
         await db.query(qr, values)
 
-        for (i = 0; i < medicineId.length; i++) {
+        for (let i = 0; i < medicineId.length; i++) {
             const qr1 = 'insert into medicine (appointment_id,medicine_id,Prescribed_quantity) values (?,?,?)'
             const values1 = [appointmentId, medicineId[i], PrescribedQuantity[i]]
 
@@ -41,11 +41,11 @@ async function addPatientsPrescription(appointmentId, diagnosys, medicineId, Pre
 async function checkMedicineValidity(medicineId) {
     const db = makeDb()
     try {
-        for (i = 0; i < medicineId.length; i++) {
+        for (let i of medicineId) {
             const qr = 'SELECT id FROM pharmacy WHERE id = ?'
 
-            const result = await db.query(qr, medicineId[i])
-            return result.length > 0
+            const result = await db.query(qr, i)
+            return result.length >= 1
         }
     } catch (err) {
         console.error('Error checking medicine validity:', err.message)
