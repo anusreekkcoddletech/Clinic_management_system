@@ -1,5 +1,5 @@
 const express = require('express')
-const app = express() // Sensitive
+const app = express() 
 const authRoute = require('./routes/auth')
 const patients = require('./routes/patient')
 const doctor = require('./routes/doctor')
@@ -8,7 +8,7 @@ const manager = require('./routes/manager')
 const PORT = 3001
 const cors = require('cors')
 
-app.use(cors()) // Sensitive
+app.use(cors()) 
 
 app.use(express.json())
 app.use('/user', authRoute)

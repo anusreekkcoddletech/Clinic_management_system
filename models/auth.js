@@ -1,11 +1,12 @@
 
 const { makeDb } = require('../databaseConnect')
+
 async function registerUser(userInfo) {
   const db = makeDb()
   try {
-    const { name, username, password, age, gender, phone, bloodGroup, user_type } = userInfo
-    const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup,user_type) values (?, ?, ?, ?, ?, ?, ?,?)'
-    const values = [name, username, password, age, gender, phone, bloodGroup,user_type]
+    const { name, username, password, age, gender, phone, bloodGroup, userType } = userInfo
+    const qr = 'insert into patients (name, username, password, age, gender, phone, bloodgroup,userType) values (?, ?, ?, ?, ?, ?, ?,?)'
+    const values = [name, username, password, age, gender, phone, bloodGroup, userType]
     await db.query(qr, values)
   } catch (err) {
     console.error('Error:', err.message)
@@ -16,12 +17,11 @@ async function registerUser(userInfo) {
   }
 }
 
-async function registerEmployee(employeeInfo) {
+async function registerEmployee(name, qualification, experience, gender, phone, hiringDate, employeeTypesId, departmentId, username, password) {
   const db = makeDb()
   try {
-   const{ name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password}=employeeInfo
-    const qr = 'insert into employees (name, qualification, experience, gender, phone, hiring_date,employee_types_id,departments_id,username,password) values (?, ?, ?, ?, ?, ?, ?,?,?,?)'
-    const values = [name, qualification, experience, gender, phone, hiring_date,employee_types_id,department_id,username,password]
+    const qr = 'insert into employees (name, qualification, experience, gender, phone, hiringDate,employeeTypesId,departmentId,username,password) values (?, ?, ?, ?, ?, ?, ?,?,?,?)'
+    const values = [name, qualification, experience, gender, phone, hiringDate, employeeTypesId, departmentId, username, password]
     await db.query(qr, values)
     return true
   } catch (err) {
@@ -62,18 +62,18 @@ async function checkRegisteredEmployee(username) {
     await db.close()
   }
 }
-async function loginUser(username, password, employeeTypes) {
+async function loginUser(username, password, userTypes) {
   const db = makeDb()
   try {
-    if (employeeTypes === "patient") {
-      const qr = 'select * from patients where username=? and password=? and user_type=?'
-      const values = [username, password,employeeTypes]
+    if (userTypes == "patient") {
+      const qr = 'select * from patients where username=? and password=? and userType=?'
+      const values = [username, password, userTypes]
       const patientLogin = await db.query(qr, values)
       return patientLogin
     }
     else {
-      const qr = `select e.id,e.name,e.qualification,e.gender,e.username,e_types.name as employee_type,e.password from employees e inner join employee_types e_types on e.employee_types_id = e_types.id where username=? and password=? and e_types.name=?`
-      const values = [username, password, employeeTypes]
+      const qr = `select e.id,e.name,e.qualification,e.gender,e.username,e_types.name as employee_type,e.password from employees e inner join employee_types e_types on e.employeeTypesId = e_types.id where username=? and password=? and e_types.name=?`
+      const values = [username, password, userTypes]
       const employeeLogin = await db.query(qr, values)
       return employeeLogin
     }

@@ -12,6 +12,8 @@ router.get('/selectedMonthPatientsAppointments',jwt.verifyToken, patientControll
 
 router.post('/bookAppointments',jwt.verifyToken, patientController.bookAppointmentsList)
 
+router.post('/viewProfile',jwt.verifyToken, patientController.getPatientProfileData)
+
 
 module.exports = router
 

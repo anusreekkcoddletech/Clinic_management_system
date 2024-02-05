@@ -71,7 +71,7 @@ const addMedicineToPharmacy = async function (req, res) {
         const checkExistingMedicine = await userModel.checkExistingMedicine(code)
         if (checkExistingMedicine.length > 0) {
             await userModel.updateMedicineStock(stock,price,code)          
-            return res.status(500).send({ success: false, message: 'Updated stock quantity' })
+            return res.status(200).send({ success: true, message: 'Updated stock quantity' })
         }
         const addMedicine = await userModel.addMedicine(medicineInfo)
         if (checkExistingMedicine === false || updateStock === false||!addMedicine) {

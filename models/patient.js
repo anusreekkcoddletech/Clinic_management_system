@@ -25,6 +25,7 @@ async function getSelectedMonthPatients(month, year) {
     }
 }
 
+
 async function getPatientsAppointments() {
     const db = makeDb()
     try {
@@ -137,6 +138,21 @@ async function bookAppointmentsList(patientsId, employeesId, date, time) {
         await db.close()
     }
 }
+async function viewProfile(username) {
+    const db = makeDb()
+    try {
+        const qr = `select name,age,gender,phone,bloodGroup from patients where username=?`
+        const values = [username]
+
+        const viewProfile = await db.query(qr,values)
+        return viewProfile
+    } catch (err) {
+        console.log('Error fetching patients details:', err.message)
+        return false
+    } finally {
+        await db.close()
+    }
+}
 
 
 
@@ -150,8 +166,7 @@ module.exports = {
     checkAppointmentBooked,
     checkNumberOfAppointments,
     getAppointmentLimit,
-    // isPatient
-}
+    viewProfile}
 
 
 

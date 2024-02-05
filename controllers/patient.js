@@ -15,7 +15,6 @@ const getSelectedMonthPatients = async (req, res) => {
     } catch (err) {
         console.log('Error fetching data:', err.message)
         return res.status(500).send({ success: false, message: 'Failed to fetch data' })
-
     }
 }
 
@@ -47,7 +46,6 @@ const getPatientsAppointmentsList = async (req, res) => {
     } catch (err) {
         console.log('Error fetching data:', err.message)
         return res.status(500).send({ success: false, message: 'Failed to fetch data' })
-
     }
 }
 
@@ -59,7 +57,6 @@ const bookAppointmentsList = async function (req, res) {
         if (!patientsId || !employeesId || !date || !time) {
             console.error('Some fields are empty')
             return res.status(409).send({ success: false, message: 'All fields are required' })
-
         }
 
         const checkAppointmentBooked = await userModel.checkAppointmentBooked(time, date)
@@ -91,13 +88,35 @@ const bookAppointmentsList = async function (req, res) {
          res.status(200).send({ success: false, message: 'Booking failed' })
     }
 }
+const getPatientProfileData = async (req, res) => {
+    try {
+        console.log('Data Request Body:', req.body)
+        const { username } = req.body
 
+        if (username == null) {
+            console.error('Invalid username')
+            return res.status(409).send({ success: false, message: 'Invalid username' })
+        }
+        const patientProfileData = await userModel.viewProfile(username)
+        if (!patientProfileData) {
+            return res.status(409).send({ success: false, message: 'Error fetching data' })
+
+        } else {
+            return res.status(200).send({ success: true, message: 'Data fetched successfully', data: patientProfileData })
+        }
+    } catch (err) {
+        console.log('Error fetching data:', err.message)
+        return res.status(500).send({ success: false, message: 'Failed to fetch data' })
+
+    }
+}
 
 module.exports = {
     getSelectedMonthPatientsappointments,
     getSelectedMonthPatients,
     bookAppointmentsList,
     getPatientsAppointmentsList,
+    getPatientProfileData
 }
 
 
